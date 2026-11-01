@@ -7,8 +7,10 @@ index.html                      the website
 Soumyadip_Paul_CV_.pdf          CV (linked from the top bar)
 .nojekyll                       tells GitHub Pages to serve files as-is
 shrink_photos.py                optional: makes photos small before upload
+update_photo_list.py            backup photo list (see below)
 images/
-  profile.jpg                   ← ADD your profile photo with this exact name
+  profile.jpg                   ← ADD your profile photo (profile.jpg / .jpeg / .png)
+  photo-list.js                 backup list of photos, made by update_photo_list.py
   treks/
     sandakphu-2024/             ← one folder per trek, any number of photos
     kedarkantha-2023/
@@ -65,9 +67,35 @@ Repo: `soumyadip0110paul.github.io`, branch `main`.
   contents (keep the `images/` structure) → Commit.
 - Command line: `git add . && git commit -m "Update site" && git push`
 
-Changes are live in 1–2 minutes. Images are listed using GitHub's API; if
-your repo or branch name differs, edit the `GITHUB` block at the top of the
-script in `index.html`.
+Changes are live in 1–2 minutes. Press Ctrl+Shift+R (Cmd+Shift+R on Mac) to
+reload without the browser's old copy.
 
-Don't upload `*_originals/` folders created by the shrink script.
-Keep the repo under ~1 GB (GitHub Pages limit) — shrinking photos helps a lot.
+The page works out which repository it's in from its own address, so the
+repository can have any name. Only if you use a custom domain (not
+*.github.io), fill in `GITHUB_OVERRIDE` near the top of the script.
+
+## Backup photo list (recommended)
+
+The page asks GitHub which photos are in each folder. GitHub allows each
+visitor about 60 of these requests per hour, so as a backup, run this after
+adding or removing photos and upload the result too:
+
+    python update_photo_list.py
+
+It updates `images/photo-list.js`. It's also needed if you preview the site by
+double-clicking `index.html` on your computer, since the GitHub lookup only
+works on the live site.
+
+## Photos not showing? Check these
+
+1. **Uploaded to the right place?** On github.com, open your repo and check you
+   can click into `images` → `treks` → your trek folder → see the photos.
+   `index.html` and the `images` folder must sit side by side.
+2. **Names match exactly.** GitHub is case-sensitive: `images/Treks/` is not
+   `images/treks/`. Keep folder names lowercase.
+3. **Profile photo** must be inside `images/` and named `profile.jpg`,
+   `profile.jpeg` or `profile.png`.
+4. **Not .HEIC.** Browsers can't show iPhone HEIC files; run `shrink_photos.py`.
+5. **Read the message on the page.** If the trek section can't load photos, it
+   says why (e.g. which folder or repository it couldn't find).
+6. **Previewing on your computer?** Run `python update_photo_list.py` first.

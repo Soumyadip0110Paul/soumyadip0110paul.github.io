@@ -68,7 +68,7 @@
         #lightbox.open { display: flex; }
     </style>
     <script>
-        tailwind.config = {
+        if (window.tailwind) tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
@@ -78,6 +78,19 @@
                 }
             }
         }
+    </script>
+    <script>
+        // Profile photo: tries common names/extensions before showing a placeholder icon.
+        const PROFILE_CANDIDATES = ['images/profile.jpg', 'images/profile.jpeg', 'images/profile.png', 'images/profile.JPG', 'images/profile.JPEG', 'images/profile.PNG', 'images/Profile.jpg', 'profile.jpg', 'profile.jpeg', 'profile.png'];
+        function handleImageError(img) {
+            const tried = parseInt(img.dataset.tried || '0', 10) + 1;
+            img.dataset.tried = tried;
+            if (tried < PROFILE_CANDIDATES.length) { img.src = PROFILE_CANDIDATES[tried]; return; }
+            img.style.display = 'none';
+            const fallback = document.getElementById('image-fallback');
+            if (fallback) fallback.style.display = 'flex';
+        }
+
     </script>
 </head>
 <body class="bg-sepia-light dark:bg-sepia-dark text-sepia-dark dark:text-[#faedcd] selection:bg-sepia-accent/30 overflow-x-hidden">
@@ -306,6 +319,7 @@
         </figure>
     </div>
 
+    <script src="images/photo-list.js" onerror="window.PHOTO_LIST = []"></script>
     <script>
         /* =====================================================================
            CONFIGURATION — edit this block to manage images
@@ -323,11 +337,20 @@
            If you are NOT hosting on GitHub Pages, list images manually in
            TREK_PHOTOS_MANUAL / a paper's `figures` array instead.
         ===================================================================== */
-        const GITHUB = {
-            user:   'soumyadip0110paul',
-            repo:   'soumyadip0110paul.github.io',
-            branch: 'main'
-        };
+        // Detected automatically from the page address, e.g.
+        //   https://soumyadip0110paul.github.io/MySite/  -> user soumyadip0110paul, repo MySite
+        // Only fill these in if you use a custom domain (leave '' for auto).
+        const GITHUB_OVERRIDE = { user: '', repo: '' };
+
+        const GITHUB = (() => {
+            if (GITHUB_OVERRIDE.user && GITHUB_OVERRIDE.repo) return GITHUB_OVERRIDE;
+            const host = location.hostname;
+            if (!host.endsWith('.github.io')) return null;
+            const user = host.replace('.github.io', '');
+            const first = location.pathname.split('/').filter(Boolean)[0];
+            const repo = first && !first.includes('.') ? first : `${user}.github.io`;
+            return { user, repo };
+        })();
 
         const TREK_FOLDER = 'images/treks';
         const TREK_PAGE_SIZE = 12;   // photos shown before "Show more"
@@ -446,6 +469,9 @@
 
         const courses = ['Quantum Computing and Quantum Information', 'Machine Learning', 'Pattern Recognition', 'Advanced Algorithms', 'Advanced Engineering Mathematics', 'Advanced Software Engineering', 'Research Methodology and IPR'];
 
+        // Icons are optional: if the icon library can't load, the page still works.
+        function renderIcons() { try { if (window.lucide) lucide.createIcons(); } catch (e) {} }
+
         /* ====================== IMAGE LOADING ====================== */
         const IMG_EXT = /\.(jpe?g|png|webp|gif|avif|svg)$/i;
 
@@ -457,31 +483,59 @@
                 .replace(/^\w/, c => c.toUpperCase());
         }
 
-        // Lists a repo folder via the GitHub API -> { images: [...], dirs: [...] } (cached per session).
+        // Lists a folder -> { images: [...], dirs: [...], error }.
+        // 1) On GitHub Pages: asks GitHub which files are in the folder.
+        // 2) Otherwise / if that fails: uses images/photo-list.js (made by update_photo_list.py).
+        const folderErrors = {};
+
+        function listFromPhotoList(folder) {
+            const all = (window.PHOTO_LIST || []);
+            const prefix = folder.replace(/\/+$/, '') + '/';
+            const images = [], dirs = new Set();
+            all.forEach(path => {
+                if (!path.startsWith(prefix)) return;
+                const rest = path.slice(prefix.length).split('/');
+                if (rest.length === 1) images.push({ src: path.split('/').map(encodeURIComponent).join('/'), caption: captionFromFile(rest[0]) });
+                else dirs.add(rest[0]);
+            });
+            return { images, dirs: [...dirs].sort((a, b) => a.localeCompare(b, undefined, { numeric: true })) };
+        }
+
         async function listFolder(folder) {
-            const cacheKey = 'dir:' + folder;
+            const cacheKey = 'dir2:' + folder;
             try {
                 const cached = sessionStorage.getItem(cacheKey);
                 if (cached) return JSON.parse(cached);
             } catch (e) {}
-            const empty = { images: [], dirs: [] };
-            try {
-                const url = `https://api.github.com/repos/${GITHUB.user}/${GITHUB.repo}/contents/${folder}?ref=${GITHUB.branch}`;
-                const res = await fetch(url);
-                if (!res.ok) return empty;
-                const items = await res.json();
-                if (!Array.isArray(items)) return empty;
-                const byName = (a, b) => a.name.localeCompare(b.name, undefined, { numeric: true });
-                const out = {
-                    images: items.filter(f => f.type === 'file' && IMG_EXT.test(f.name)).sort(byName)
-                        .map(f => ({ src: `${folder}/${encodeURIComponent(f.name)}`, caption: captionFromFile(f.name) })),
-                    dirs: items.filter(f => f.type === 'dir').sort(byName).map(f => f.name)
-                };
-                try { sessionStorage.setItem(cacheKey, JSON.stringify(out)); } catch (e) {}
-                return out;
-            } catch (e) {
-                return empty;
+
+            if (GITHUB) {
+                try {
+                    const path = folder.split('/').map(encodeURIComponent).join('/');
+                    const res = await fetch(`https://api.github.com/repos/${GITHUB.user}/${GITHUB.repo}/contents/${path}`);
+                    if (res.ok) {
+                        const items = await res.json();
+                        if (Array.isArray(items)) {
+                            const byName = (a, b) => a.name.localeCompare(b.name, undefined, { numeric: true });
+                            const out = {
+                                images: items.filter(f => f.type === 'file' && IMG_EXT.test(f.name)).sort(byName)
+                                    .map(f => ({ src: f.path.split('/').map(encodeURIComponent).join('/'), caption: captionFromFile(f.name) })),
+                                dirs: items.filter(f => f.type === 'dir').sort(byName).map(f => f.name)
+                            };
+                            if (out.images.length || out.dirs.length) {
+                                try { sessionStorage.setItem(cacheKey, JSON.stringify(out)); } catch (e) {}
+                            }
+                            return out;
+                        }
+                    } else {
+                        folderErrors[folder] = res.status === 404
+                            ? `GitHub has no folder “${folder}” in the repository “${GITHUB.user}/${GITHUB.repo}”. Check the folder name and that it was uploaded.`
+                            : (res.status === 403 ? 'GitHub’s free request limit was reached for now; showing the saved photo list instead.' : `GitHub returned error ${res.status}.`);
+                    }
+                } catch (e) {
+                    folderErrors[folder] = 'Could not reach GitHub.';
+                }
             }
+            return listFromPhotoList(folder);
         }
         async function listFolderImages(folder) { return (await listFolder(folder)).images; }
 
@@ -533,7 +587,7 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
+            renderIcons();
             initBackground();
             injectContent();
             loadTrekGallery();
@@ -612,7 +666,7 @@
                 courseList.appendChild(li);
             });
 
-            lucide.createIcons();
+            renderIcons();
         }
 
         // Each subfolder of images/treks/ is one trek (album). Loose files go into "More trails".
@@ -625,7 +679,7 @@
             } else {
                 const root = await listFolder(TREK_FOLDER);
                 const albums = await Promise.all(root.dirs.map(async d => {
-                    const imgs = await listFolderImages(`${TREK_FOLDER}/${encodeURIComponent(d)}`);
+                    const imgs = await listFolderImages(`${TREK_FOLDER}/${d}`);
                     const album = captionFromFile(d);
                     return imgs.map(p => ({ ...p, album, caption: `${album} • ${p.caption}` }));
                 }));
@@ -633,7 +687,14 @@
                 if (root.images.length) photos = photos.concat(root.images.map(p => ({ ...p, album: 'More trails' })));
             }
             document.getElementById('trek-loading').remove();
-            if (!photos.length) { document.getElementById('trek-empty').classList.remove('hidden'); return; }
+            if (!photos.length) {
+                const msg = document.getElementById('trek-empty');
+                const why = folderErrors[TREK_FOLDER];
+                if (why) msg.textContent = 'Trek photos could not be loaded. ' + why;
+                else if (!GITHUB) msg.textContent = 'No trek photos found. When opening the page from your computer, run update_photo_list.py first (see README).';
+                msg.classList.remove('hidden');
+                return;
+            }
             trekAll = photos;
 
             const albumNames = [...new Set(photos.map(p => p.album))];
@@ -717,12 +778,6 @@
                 });
                 wrap.classList.remove('hidden');
             }));
-        }
-
-        function handleImageError(img) {
-            img.style.display = 'none';
-            const fallback = document.getElementById('image-fallback');
-            if (fallback) fallback.style.display = 'flex';
         }
 
         function initBackground() {
