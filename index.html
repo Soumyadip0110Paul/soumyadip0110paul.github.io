@@ -2,10 +2,11 @@
 <html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Soumyadip Paul • Research Scholar</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <meta name="description" content="Soumyadip Paul — PhD Research Scholar and IndiaAI Fellow at CARE, IIT Delhi. Quantum Machine Learning and Optimization for 6G and beyond wireless networks.">
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@300;400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -24,32 +25,16 @@
         @media (min-width: 768px) {
             body { font-size: 1.25rem; line-height: 1.8; }
         }
-        h1, h2, h3, h4, .serif {
-            font-family: 'Crimson Pro', serif;
-        }
-        .arcade-font {
-            font-family: 'Press+Start+2P', cursive;
-            font-size: 0.5rem;
-        }
-        @media (min-width: 640px) {
-            .arcade-font { font-size: 0.6rem; }
-        }
-        .sepia-overlay {
-            background: radial-gradient(circle at 50% 0%, #d2b48c22 0%, transparent 70%);
-        }
-        .dark .sepia-overlay {
-            background: radial-gradient(circle at 50% 0%, #1a1614 0%, transparent 70%);
-        }
-        
+        h1, h2, h3, h4, .serif { font-family: 'Crimson Pro', serif; }
+        .arcade-font { font-family: 'Press Start 2P', cursive; font-size: 0.5rem; }
+        @media (min-width: 640px) { .arcade-font { font-size: 0.6rem; } }
+        .sepia-overlay { background: radial-gradient(circle at 50% 0%, #d2b48c22 0%, transparent 70%); }
+        .dark .sepia-overlay { background: radial-gradient(circle at 50% 0%, #1a1614 0%, transparent 70%); }
+
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { 
-            background: #3e342e; 
-            border-radius: 10px;
-            border: 2px solid transparent;
-            background-clip: content-box;
-        }
-        
+        ::-webkit-scrollbar-thumb { background: #3e342e; border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
+
         .game-canvas {
             image-rendering: pixelated;
             box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
@@ -60,38 +45,27 @@
             touch-action: none;
             background: #87CEEB;
         }
+        html { scroll-behavior: smooth; }
+        @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
-        .gradient-border {
-            position: relative;
-            background: rgba(212, 163, 115, 0.05);
-            padding: 1px;
-            border-radius: 1rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(212, 163, 115, 0.1);
-        }
+        .btn-primary { background: var(--accent); color: var(--dark-bg); transition: all 0.4s ease; }
+        .btn-primary:hover { letter-spacing: 0.1em; box-shadow: 0 0 15px rgba(212, 163, 115, 0.4); }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(3deg); }
-        }
-        .doodle {
-            animation: float 18s ease-in-out infinite;
-            filter: blur(1.5px);
-        }
+        a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        /* Trek gallery: masonry via CSS columns */
+        .trek-grid { column-count: 1; column-gap: 1rem; }
+        @media (min-width: 640px) { .trek-grid { column-count: 2; } }
+        @media (min-width: 1024px) { .trek-grid { column-count: 3; } }
+        .trek-item { break-inside: avoid; margin-bottom: 1rem; }
 
-        .btn-primary {
-            background: var(--accent);
-            color: var(--dark-bg);
-            transition: all 0.4s ease;
-        }
-        .btn-primary:hover {
-            letter-spacing: 0.1em;
-            box-shadow: 0 0 15px rgba(212, 163, 115, 0.4);
-        }
+        /* Paper figure strip */
+        .fig-strip { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.25rem; scrollbar-width: thin; }
+        .fig-strip button { flex: 0 0 auto; }
+
+        /* Lightbox */
+        #lightbox { display: none; }
+        #lightbox.open { display: flex; }
     </style>
     <script>
         tailwind.config = {
@@ -99,12 +73,7 @@
             theme: {
                 extend: {
                     colors: {
-                        sepia: {
-                            dark: '#0a0908',
-                            light: '#fdfaf6',
-                            accent: '#d4a373',
-                            muted: '#8b5e3c'
-                        }
+                        sepia: { dark: '#0a0908', light: '#fdfaf6', accent: '#d4a373', muted: '#8b5e3c' }
                     }
                 }
             }
@@ -120,20 +89,19 @@
     <div id="progress-bar" class="fixed top-0 left-0 h-[2px] bg-sepia-accent z-[100] transition-all duration-100" style="width: 0%"></div>
 
     <nav class="fixed top-0 w-full z-[60] px-4 py-4 md:px-8 flex justify-between items-center backdrop-blur-md border-b border-sepia-muted/10">
-        <div class="text-xs sm:text-sm font-bold tracking-[0.2em] md:tracking-[0.4em] text-sepia-accent uppercase serif italic">
-            S. Paul
-        </div>
-        
+        <div class="text-xs sm:text-sm font-bold tracking-[0.2em] md:tracking-[0.4em] text-sepia-accent uppercase serif italic">S. Paul</div>
+
         <div class="hidden lg:flex gap-8 text-[9px] font-bold uppercase tracking-[0.3em] text-sepia-muted">
             <a href="#about" class="hover:text-sepia-accent transition-colors">Vision</a>
             <a href="#experience" class="hover:text-sepia-accent transition-colors">Research</a>
             <a href="#publications" class="hover:text-sepia-accent transition-colors">Publications</a>
-            <a href="#research" class="hover:text-sepia-accent transition-colors">Arcade</a>
             <a href="#education" class="hover:text-sepia-accent transition-colors">History</a>
+            <a href="#treks" class="hover:text-sepia-accent transition-colors">Treks</a>
+            <a href="#research" class="hover:text-sepia-accent transition-colors">Arcade</a>
         </div>
 
         <div class="flex gap-2 md:gap-4 items-center">
-            <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-sepia-accent/10 transition-all text-sepia-accent">
+            <button onclick="toggleTheme()" aria-label="Toggle dark mode" class="p-2 rounded-full hover:bg-sepia-accent/10 transition-all text-sepia-accent">
                 <i data-lucide="sun" id="theme-icon-sun" class="w-4 h-4"></i>
                 <i data-lucide="moon" id="theme-icon-moon" class="hidden w-4 h-4"></i>
             </button>
@@ -146,6 +114,7 @@
         </div>
     </nav>
 
+    <!-- HERO -->
     <section class="relative min-h-[90vh] sm:min-h-screen flex flex-col items-center justify-center px-6 py-20 md:py-32 sepia-overlay overflow-hidden">
         <div class="max-w-7xl w-full">
             <div class="text-center z-10 space-y-6 sm:space-y-10 max-w-4xl mx-auto">
@@ -153,13 +122,22 @@
                     <i data-lucide="scan" class="w-3 h-3 animate-pulse text-sepia-accent"></i> PhD Research • Quantum Intelligence ⚛️
                 </div>
 
-                <h1 class="text-4xl sm:text-7xl md:text-8xl lg:text-[9.5rem] font-bold leading-[0.9] serif tracking-tighter transition-colors text-sepia-dark dark:text-[#faedcd]">
+                <h1 class="text-4xl sm:text-7xl md:text-8xl lg:text-[9.5rem] font-bold leading-[0.9] serif tracking-tighter text-sepia-dark dark:text-[#faedcd]">
                     Soumyadip <br /><span class="italic text-sepia-accent">Paul.</span>
                 </h1>
 
                 <p class="max-w-3xl text-sepia-muted text-base sm:text-xl md:text-2xl font-light leading-relaxed mx-auto px-4">
-                    PhD Research Scholar at <span class="italic serif text-sepia-dark dark:text-[#faedcd] border-b border-sepia-accent/30">IIT Delhi (CARE) 🏛️</span>. Bridging the gap between Quantum Machine Learning theory and large-scale 6G Network Optimization 🚀📶.
+                    PhD Research Scholar &amp; IndiaAI Fellow at <span class="italic serif text-sepia-dark dark:text-[#faedcd] border-b border-sepia-accent/30">IIT Delhi (CARE) 🏛️</span>. Quantum Machine Learning and quantum optimization for 6G and beyond wireless networks 🚀📶.
                 </p>
+
+                <div class="flex flex-wrap gap-3 justify-center items-center">
+                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-sepia-accent/30 bg-sepia-accent/5 text-sepia-accent text-[9px] sm:text-[11px] font-bold uppercase tracking-widest">
+                        <i data-lucide="award" class="w-3.5 h-3.5"></i> IndiaAI Fellowship • Dec 2025
+                    </span>
+                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-sepia-muted/20 text-sepia-muted text-[9px] sm:text-[11px] font-bold uppercase tracking-widest">
+                        <i data-lucide="user-check" class="w-3.5 h-3.5"></i> Advisor: Prof. Neel Kanth Kundu
+                    </span>
+                </div>
 
                 <div class="flex flex-wrap gap-4 sm:gap-6 justify-center items-center pt-2 sm:pt-4">
                     <a href="#contact-bottom" class="btn-primary group relative px-8 sm:px-10 py-3 font-bold uppercase tracking-[0.2em] text-[9px] sm:text-[10px] rounded-full overflow-hidden hover:pr-14">
@@ -171,14 +149,9 @@
                 <div class="relative group inline-block pt-8 sm:pt-12">
                     <div class="absolute -inset-4 sm:-inset-6 bg-sepia-accent/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
                     <div class="relative w-36 h-36 sm:w-60 sm:h-60 lg:w-80 lg:h-80 rounded-full overflow-hidden border-2 border-sepia-muted/20 shadow-2xl transition-all duration-700 bg-black flex items-center justify-center mx-auto">
-                        <img 
-                            id="profile-img"
-                            src="WhatsApp Image 2025-12-16 at 18.18.47.jpeg" 
-                            alt="Soumyadip Paul" 
-                            class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 opacity-0 scale-105 group-hover:scale-100"
-                            onload="this.classList.remove('opacity-0')"
-                            onerror="handleImageError(this)"
-                        >
+                        <img id="profile-img" src="images/profile.jpg" alt="Soumyadip Paul"
+                             class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 opacity-0 scale-105 group-hover:scale-100"
+                             onload="this.classList.remove('opacity-0')" onerror="handleImageError(this)">
                         <div id="image-fallback" class="absolute inset-0 hidden items-center justify-center text-sepia-accent">
                             <i data-lucide="user" class="w-12 h-12 sm:w-16 sm:h-16"></i>
                         </div>
@@ -186,34 +159,93 @@
                 </div>
             </div>
         </div>
-        
         <div class="absolute bottom-4 sm:bottom-6 flex flex-col items-center gap-2 opacity-30">
             <span class="text-[7px] sm:text-[8px] uppercase tracking-[0.5em] font-bold">Scroll</span>
             <i data-lucide="mouse" class="w-4 h-4 animate-bounce"></i>
         </div>
     </section>
 
+    <!-- ABOUT -->
     <section id="about" class="py-16 sm:py-24 md:py-40 px-6 max-w-6xl mx-auto border-t border-sepia-muted/10 text-center">
         <div class="space-y-8 sm:space-y-12 max-w-4xl mx-auto">
             <h2 class="text-3xl sm:text-5xl md:text-6xl font-bold serif italic text-sepia-accent">The Future of Connectivity.</h2>
             <div class="space-y-6 sm:space-y-8 text-sepia-muted font-light leading-relaxed text-base sm:text-lg md:text-xl">
                 <p>
-                    As a researcher at the Centre for Applied Research in Electronics (CARE), IIT Delhi, My work moves beyond classical optimization by architecting Quantum Machine Learning (QML) models that can manage massive resource allocation and decentralized network slicing in real-time.
+                    I am a doctoral researcher at the Centre for Applied Research in Electronics (CARE), IIT Delhi, working with Prof. Neel Kanth Kundu. My research explores quantum machine learning and hybrid quantum-classical optimization for next-generation (6G and beyond) wireless networks.
                 </p>
                 <p>
-                    While my academic history includes a deep understanding of post-quantum security and blockchain, my current focus is solely on Quantum-Classical Hybrid Intelligence. I believe that the next decade of telecommunications will be defined by its ability to harness quantum logic to ensure ultra-reliable, high-speed connectivity for a global infrastructure. 🌐⚡
+                    Recent work includes a warm-start linear-ramp QAOA (WSLR-QAOA) for QAM MIMO data detection, formulated as a higher-order unconstrained binary optimization (HUBO) problem and validated on IBM quantum hardware, and an efficient quantum algorithm for phase optimization of 1-bit RIS-assisted MIMO systems. My earlier work spans post-quantum cryptography, quantum-resistant blockchain and hybrid QAOA scheduling. 🌐⚡
                 </p>
             </div>
         </div>
     </section>
 
+    <!-- EXPERIENCE -->
+    <section id="experience" class="py-16 sm:py-24 md:py-40 px-6 max-w-6xl mx-auto">
+        <h2 class="text-3xl sm:text-5xl md:text-6xl font-bold serif italic text-sepia-accent mb-12 sm:mb-20 text-center">Research Experience 🔬</h2>
+        <div id="exp-list" class="space-y-10 sm:space-y-16 max-w-4xl mx-auto"></div>
+    </section>
+
+    <!-- PUBLICATIONS -->
+    <section id="publications" class="py-16 sm:py-24 md:py-40 px-6 max-w-6xl mx-auto border-t border-sepia-muted/10">
+        <h2 class="text-3xl sm:text-5xl font-bold mb-6 serif italic text-center text-sepia-accent">Scientific Publications 📚</h2>
+        <p class="text-center text-sepia-muted text-sm sm:text-base font-light mb-12 sm:mb-20">Select a figure to view it full size.</p>
+        <div id="pub-list" class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-12"></div>
+    </section>
+
+    <!-- CONFERENCES -->
+    <section id="conferences" class="py-16 sm:py-24 md:py-40 px-6 max-w-6xl mx-auto bg-sepia-muted/[0.01] border-y border-sepia-muted/10">
+        <h2 class="text-3xl sm:text-5xl font-bold mb-12 sm:mb-20 serif italic text-center text-sepia-accent">Conferences &amp; Certification 🎤</h2>
+        <div id="conf-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"></div>
+    </section>
+
+    <!-- EDUCATION + SKILLS -->
+    <section id="education" class="py-16 sm:py-24 md:py-40 px-6">
+        <div class="max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 sm:gap-20">
+            <div class="lg:w-2/3">
+                <h2 class="text-3xl sm:text-4xl font-bold mb-10 sm:mb-16 serif italic text-sepia-accent">Academic History 🎓</h2>
+                <div id="edu-list" class="space-y-12 sm:space-y-20 text-sm sm:text-base md:text-lg"></div>
+            </div>
+            <div class="lg:w-1/3 space-y-16">
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-bold mb-10 serif italic text-sepia-accent text-center lg:text-left">Arsenal 🛠️</h2>
+                    <div id="skills-list" class="flex flex-wrap gap-2 sm:gap-4 justify-center lg:justify-start"></div>
+                </div>
+                <div>
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-6 serif italic text-sepia-accent text-center lg:text-left">Relevant Courses</h3>
+                    <ul id="courses-list" class="space-y-2 text-sepia-muted text-sm sm:text-base font-light text-center lg:text-left"></ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TREKS -->
+    <section id="treks" class="py-16 sm:py-24 md:py-40 px-6 border-t border-sepia-muted/10">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12 sm:mb-16 space-y-4">
+                <h2 class="text-3xl sm:text-5xl md:text-6xl font-bold serif italic text-sepia-accent">Off the Grid 🏔️</h2>
+                <p class="max-w-2xl mx-auto text-sepia-muted font-light text-base sm:text-lg">When I’m not optimizing networks, I’m somewhere without one. A few frames from the trails.</p>
+            </div>
+            <div id="trek-filters" class="hidden flex-wrap gap-2 sm:gap-3 justify-center mb-10" role="group" aria-label="Filter by trek"></div>
+            <div id="trek-loading" class="text-center text-sepia-muted font-light text-sm">Loading photos…</div>
+            <div id="trek-grid" class="trek-grid"></div>
+            <div class="text-center mt-10">
+                <button id="trek-more" type="button" class="hidden px-8 py-3 rounded-full border border-sepia-accent/40 text-sepia-accent font-bold uppercase tracking-[0.2em] text-[9px] sm:text-[11px] hover:bg-sepia-accent hover:text-sepia-dark transition-colors">Show more photos</button>
+            </div>
+            <p id="trek-empty" class="hidden text-center text-sepia-muted font-light text-sm sm:text-base border border-dashed border-sepia-muted/30 rounded-2xl p-10">
+                No trek photos found yet. Add images to the <code class="text-sepia-accent">images/treks/</code> folder and they’ll appear here.
+            </p>
+        </div>
+    </section>
+
+    <!-- ARCADE -->
     <section id="research" class="relative py-16 sm:py-24 md:py-48 px-6 border-y border-sepia-muted/10 bg-sepia-muted/[0.02]">
         <div class="max-w-7xl mx-auto flex flex-col items-center text-center">
             <div class="inline-flex items-center gap-3 text-sepia-accent font-bold uppercase text-[8px] sm:text-[10px] tracking-[0.3em] sm:tracking-[0.5em] mb-6 sm:mb-8">
                 <i data-lucide="layout-grid" class="w-4 h-4"></i> Interactive Hub 🎮
             </div>
             <h2 class="text-3xl sm:text-5xl md:text-6xl font-bold serif italic leading-tight mb-8 sm:mb-12">Scientific Intermission.</h2>
-            
+
             <div id="gameContainer" class="flex flex-col items-center w-full max-w-3xl">
                 <div class="w-full flex justify-between items-center mb-4 sm:mb-6 px-4">
                     <div class="text-[8px] sm:text-[10px] font-bold uppercase tracking-widest text-sepia-accent flex items-center gap-2">
@@ -224,21 +256,18 @@
 
                 <div id="gameInteractionLayer" class="relative w-full aspect-video flex items-center justify-center bg-[#050505] rounded-xl sm:rounded-2xl border border-sepia-muted/20 overflow-hidden shadow-[0_0_100px_rgba(212,163,115,0.05)] cursor-pointer">
                     <canvas id="mainCanvas" class="game-canvas"></canvas>
-                    
                     <div id="gameOverlay" class="absolute inset-0 bg-black/95 flex flex-col items-center justify-center hidden rounded-lg z-20 p-6 text-center">
-                        <h2 id="overlayTitle" class="text-2xl sm:text-3xl font-bold mb-4 serif text-sepia-accent uppercase">Simulation Loss</h2>
+                        <h2 class="text-2xl sm:text-3xl font-bold mb-4 serif text-sepia-accent uppercase">Simulation Loss</h2>
                         <p id="overlayMessage" class="text-sepia-muted mb-6 sm:mb-8 tracking-widest uppercase text-[10px] sm:text-xs">Quantum Index: 0</p>
-                        <button onclick="restartGame()" class="bg-sepia-accent text-sepia-dark font-bold py-3 px-8 sm:px-10 rounded-full transition-all hover:scale-105 active:scale-95 text-[9px] sm:text-[10px] uppercase tracking-widest">
-                            Re-Sync State
-                        </button>
+                        <button onclick="restartGame()" class="bg-sepia-accent text-sepia-dark font-bold py-3 px-8 sm:px-10 rounded-full transition-all hover:scale-105 active:scale-95 text-[9px] sm:text-[10px] uppercase tracking-widest">Re-Sync State</button>
                     </div>
                 </div>
-                
+
                 <div class="mt-4 sm:mt-6 text-sepia-muted text-[8px] sm:text-[9px] uppercase tracking-[0.2em] sm:tracking-[0.3em] text-center px-4">
                     Desktop: Space / Click. Mobile: Tap screen to Jump.
                 </div>
 
-                <div id="gamehubLink" class="mt-8 sm:mt-12 flex flex-col items-center gap-4">
+                <div class="mt-8 sm:mt-12 flex flex-col items-center gap-4">
                     <p class="text-sepia-muted text-[9px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.4em] font-light px-4">Hungry for more simulations?</p>
                     <a href="https://soumyadip0110paul.github.io/Gamehub/" target="_blank" class="group relative inline-flex items-center gap-3 sm:gap-4 px-8 sm:px-10 py-3 sm:py-4 bg-sepia-accent/5 border border-sepia-accent/30 rounded-full text-sepia-accent font-bold uppercase tracking-[0.2em] text-[8px] sm:text-[10px] hover:bg-sepia-accent hover:text-sepia-dark transition-all duration-500 shadow-lg shadow-sepia-accent/5">
                         <span class="relative z-10">Enter GameHub Terminal</span>
@@ -249,55 +278,252 @@
         </div>
     </section>
 
-    <section id="experience" class="py-16 sm:py-24 md:py-40 px-6 max-w-6xl mx-auto">
-        <h2 class="text-3xl sm:text-5xl md:text-6xl font-bold serif italic text-sepia-accent mb-12 sm:mb-20 text-center">Research Experience 🔬</h2>
-        <div id="exp-list" class="space-y-10 sm:space-y-16 max-w-4xl mx-auto"></div>
-    </section>
-
-    <section id="publications" class="py-16 sm:py-24 md:py-40 px-6 max-w-6xl mx-auto border-t border-sepia-muted/10">
-        <h2 class="text-3xl sm:text-5xl font-bold mb-12 sm:mb-20 serif italic text-center text-sepia-accent">Scientific Publications 📚</h2>
-        <div id="pub-list" class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-12"></div>
-    </section>
-
-    <section id="conferences" class="py-16 sm:py-24 md:py-40 px-6 max-w-6xl mx-auto bg-sepia-muted/[0.01] border-y border-sepia-muted/10">
-        <h2 class="text-3xl sm:text-5xl font-bold mb-12 sm:mb-20 serif italic text-center text-sepia-accent">Conference Presentations 🎤</h2>
-        <div id="conf-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"></div>
-    </section>
-
-    <section id="education" class="py-16 sm:py-24 md:py-40 px-6">
-        <div class="max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 sm:gap-20">
-            <div class="lg:w-2/3">
-                <h2 class="text-3xl sm:text-4xl font-bold mb-10 sm:mb-16 serif italic text-sepia-accent">Academic History 🎓</h2>
-                <div id="edu-list" class="space-y-12 sm:space-y-20 text-sm sm:text-base md:text-lg"></div>
-            </div>
-            <div class="lg:w-1/3">
-                <h2 class="text-3xl sm:text-4xl font-bold mb-10 sm:mb-16 serif italic text-sepia-accent text-center lg:text-left">Arsenal 🛠️</h2>
-                <div id="skills-list" class="flex flex-wrap gap-2 sm:gap-4 justify-center lg:justify-start"></div>
-            </div>
-        </div>
-    </section>
-
+    <!-- CONTACT -->
     <footer id="contact-bottom" class="py-16 sm:py-24 md:py-40 bg-sepia-muted/[0.02] text-center px-6 border-t border-sepia-muted/10">
         <div class="max-w-4xl mx-auto space-y-8 sm:space-y-12">
             <h2 class="text-4xl sm:text-6xl md:text-8xl font-bold serif italic mb-4 sm:mb-6">Connect ✉️</h2>
-            <p class="text-sepia-muted text-lg sm:text-xl md:text-2xl italic font-light leading-relaxed px-4">Available for collaboration in Quantum Machine Learning & 6G Optimization. 🤝✨</p>
-            
-            <a href="mailto:soumyadipp235@gmail.com" class="inline-block text-lg sm:text-2xl md:text-4xl font-bold text-sepia-accent hover:tracking-widest transition-all duration-700 underline decoration-sepia-accent/20 underline-offset-[12px] break-words max-w-full">
-                soumyadipp235@gmail.com
-            </a>
-            
+            <p class="text-sepia-muted text-lg sm:text-xl md:text-2xl italic font-light leading-relaxed px-4">Open to collaboration in Quantum Machine Learning, quantum optimization and 6G wireless. 🤝✨</p>
+            <a href="mailto:soumyadipp235@gmail.com" class="inline-block text-lg sm:text-2xl md:text-4xl font-bold text-sepia-accent hover:tracking-widest transition-all duration-700 underline decoration-sepia-accent/20 underline-offset-[12px] break-words max-w-full">soumyadipp235@gmail.com</a>
             <div class="flex justify-center gap-8 sm:gap-12 text-[9px] sm:text-[11px] font-bold uppercase tracking-[0.2em] sm:tracking-[0.4em] text-sepia-muted pt-6 sm:pt-10">
                 <a href="https://www.linkedin.com/in/soumyadip-paul-743bb3185/" target="_blank" class="hover:text-sepia-accent transition-colors">LinkedIn</a>
                 <a href="https://scholar.google.com/citations?user=XOewEWwAAAAJ&hl=en" target="_blank" class="hover:text-sepia-accent transition-colors">Scholar</a>
             </div>
-
-            <div class="mt-20 sm:mt-40 text-[7px] sm:text-[9px] font-mono opacity-20 uppercase tracking-[1em] sm:tracking-[2em]">
-                IIT DELHI • CARE • EST. 2026
-            </div>
+            <div class="mt-20 sm:mt-40 text-[7px] sm:text-[9px] font-mono opacity-20 uppercase tracking-[1em] sm:tracking-[2em]">IIT DELHI • CARE • INDIAAI FELLOW</div>
         </div>
     </footer>
 
+    <!-- LIGHTBOX (shared by trek photos and paper figures) -->
+    <div id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" class="fixed inset-0 z-[200] bg-black/95 items-center justify-center p-4 sm:p-10">
+        <button onclick="closeLightbox()" aria-label="Close" class="absolute top-4 right-4 p-3 rounded-full text-[#faedcd] hover:bg-white/10"><i data-lucide="x" class="w-6 h-6"></i></button>
+        <button onclick="stepLightbox(-1)" id="lb-prev" aria-label="Previous image" class="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 p-3 rounded-full text-[#faedcd] hover:bg-white/10"><i data-lucide="chevron-left" class="w-7 h-7"></i></button>
+        <button onclick="stepLightbox(1)" id="lb-next" aria-label="Next image" class="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 p-3 rounded-full text-[#faedcd] hover:bg-white/10"><i data-lucide="chevron-right" class="w-7 h-7"></i></button>
+        <figure class="max-w-6xl w-full flex flex-col items-center gap-4">
+            <img id="lb-img" src="" alt="" class="max-h-[78vh] max-w-full object-contain rounded-lg bg-white/5">
+            <figcaption class="text-center text-[#faedcd]">
+                <div id="lb-caption" class="serif italic text-lg sm:text-2xl"></div>
+                <div id="lb-count" class="text-[10px] uppercase tracking-[0.3em] opacity-50 mt-1"></div>
+            </figcaption>
+        </figure>
+    </div>
+
     <script>
+        /* =====================================================================
+           CONFIGURATION — edit this block to manage images
+           ---------------------------------------------------------------------
+           Images are loaded AUTOMATICALLY from folders in your GitHub repo,
+           so you only need to drop image files into the folders and push:
+
+             images/treks/                -> Trek gallery
+             images/papers/<paper-id>/    -> Figures for each paper (id below)
+
+           Tip: the file name becomes the caption.
+             "kedarkantha-summit-2024.jpg" -> "Kedarkantha summit 2024"
+             Prefix with numbers to control order: "01-fig-system-model.png"
+
+           If you are NOT hosting on GitHub Pages, list images manually in
+           TREK_PHOTOS_MANUAL / a paper's `figures` array instead.
+        ===================================================================== */
+        const GITHUB = {
+            user:   'soumyadip0110paul',
+            repo:   'soumyadip0110paul.github.io',
+            branch: 'main'
+        };
+
+        const TREK_FOLDER = 'images/treks';
+        const TREK_PAGE_SIZE = 12;   // photos shown before "Show more"
+
+        // Optional manual list (used instead of the folder if not empty):
+        // { src: 'images/treks/sandakphu.jpg', caption: 'Sandakphu, 2023' }
+        const TREK_PHOTOS_MANUAL = [];
+
+        /* ====================== CV DATA ====================== */
+        const publications = [
+            {
+                id: 'ris-phase-opt',
+                authors: 'S. Paul and N. K. Kundu',
+                title: 'Efficient Quantum Algorithm for Phase Optimization of 1-Bit RIS-Assisted MIMO Communication System',
+                venue: 'arXiv 2026 📡',
+                link: 'https://arxiv.org/abs/2607.14700', linkLabel: 'arXiv:2607.14700',
+                type: 'PREPRINT', figures: []
+            },
+            {
+                id: 'wslr-qaoa-mimo',
+                authors: 'S. Paul, S. Banerjee, D. Bhowmik, and N. K. Kundu',
+                title: 'Warm-Start Quantum Approximate Optimization Algorithm for QAM MIMO Data Detection',
+                venue: 'arXiv 2026 ⚛️',
+                link: 'https://arxiv.org/abs/2604.18479', linkLabel: 'arXiv:2604.18479',
+                type: 'PREPRINT', figures: []
+            },
+            {
+                id: 'ciacon-nlp',
+                authors: 'D. Das, A. K. Paul, R. S. Ray, S. Paul',
+                title: 'Automated Alignment of Course Outcomes with Program Outcomes and Program Educational Objectives Using NLP Techniques',
+                venue: 'IEEE CIACON 2025, Durgapur 📚',
+                doi: '10.1109/CIACON65473.2025.11189748',
+                type: 'CONFERENCE PAPER', figures: []
+            },
+            {
+                id: 'hqaoa-blockchain',
+                authors: 'S. Paul and S. Chakraborty',
+                title: 'Hybrid Quantum Approximate Optimization Algorithm (HQAOA) for Efficient Blockchain Transaction Scheduling',
+                venue: 'IEEE ISACC 2025, Silchar 🔗',
+                doi: '10.1109/ISACC65211.2025.10969380',
+                type: 'CONFERENCE PAPER', figures: []
+            },
+            {
+                id: 'vlsi-thermal',
+                authors: 'A. Sinharay, S. Paul, S. Chakraborty and K. Chatterjee',
+                title: 'Partition Matching Maximum Zero-Sum Algorithm to Address VLSI Thermal Placement Issues',
+                venue: 'IEEE RAIT 2025, Dhanbad 🔥',
+                doi: '10.1109/RAIT65068.2025.11088908',
+                type: 'CONFERENCE PAPER', figures: []
+            },
+            {
+                id: 'qhf-blockchain',
+                authors: 'S. Paul, M. M. Maitra, S. Chakraborty',
+                title: 'Quantum Resistance Blockchain Algorithm using QHF and Novel Consensus Mechanism',
+                venue: 'IEEE SCEECS 2025, Bhopal 🛡️',
+                doi: '10.1109/SCEECS64059.2025.10940775',
+                type: 'CONFERENCE PAPER', figures: []
+            },
+            {
+                id: 'rcs-blockchain',
+                authors: 'S. Paul, S. Chakraborty, H. Rahaman',
+                title: 'A Novel Technique for Optimizing Supply Chain Operations in Railway Cargo System (RCS) using Blockchain Technology',
+                venue: 'AISC 2024 🚉',
+                note: 'Presented • In proceedings (ICT book series)',
+                type: 'CONFERENCE PAPER', figures: []
+            }
+        ];
+
+        const conferences = [
+            { name: 'IEEE ISACC 2025', location: 'Silchar', type: 'Oral Paper Presentation', details: '3rd International Conference on Intelligent Systems, Advanced Computing and Communication. Presented HQAOA for blockchain transaction scheduling.' },
+            { name: 'IEEE SCEECS 2025', location: 'Bhopal', type: 'Oral Paper Presentation', details: 'IEEE International Students’ Conference on Electrical, Electronics and Computer Science. Presented the quantum-resistant blockchain algorithm.' },
+            { name: 'AISC 2024', location: 'Kolkata', type: 'Paper Presentation', details: 'International Conference on Artificial Intelligence and Sustainable Computing. Presented blockchain-based supply chain optimization for railway cargo.' },
+            { name: 'IEEE India Council IAYPC', location: 'Aug — Dec 2024', type: 'Student Mentee', details: 'Industry Academia Young Professionals Committee mentorship programme (certification).' }
+        ];
+
+        const researchExperience = [
+            {
+                title: 'PhD Research: QML & Optimization for 6G and Beyond',
+                period: 'July 2025 — Present',
+                location: 'CARE, IIT Delhi • Advisor: Prof. Neel Kanth Kundu',
+                details: [
+                    'Researching quantum machine learning and hybrid quantum-classical optimization algorithms for next-generation wireless networks.',
+                    'Developed a warm-start linear-ramp QAOA (WSLR-QAOA) framework for QAM MIMO data detection, formulated as a HUBO problem and validated on IBM quantum hardware (arXiv:2604.18479).',
+                    'Awarded the IndiaAI Fellowship (17 December 2025) in recognition of doctoral research contributions.'
+                ]
+            },
+            {
+                title: 'M.Tech Thesis: Quantum & Post-Quantum Cryptography',
+                period: 'July 2023 — May 2025',
+                location: 'GCECT, Kolkata • Advisor: Dr. Mausumi Maitra (Mazumdar)',
+                details: [
+                    'Investigated post-quantum cryptographic algorithms for enhanced data security.',
+                    'Built a quantum-resistant blockchain framework combining quantum hash functions with a novel consensus mechanism (Quantum Proof of Stake and Behavior, QPoSB) for malicious-behaviour detection.',
+                    'Designed HQAOA, integrating MA-QAOA and AL-QAOA, for blockchain transaction scheduling (with Prof. Dr. Sarit Chakraborty). Presented at IEEE ISACC 2025 and IEEE SCEECS 2025.'
+                ]
+            },
+            {
+                title: 'Research Intern: SERB-Sponsored Project',
+                period: 'Jan — July 2024',
+                location: 'GCELT, Kolkata • PI: Dr. Sarit Chakraborty',
+                details: [
+                    'Design optimization of Micro-Electrode-Dot-Array based Digital Microfluidic Biochips (MEDA DMFBs) for cyber-physical systems, sponsored by SERB, DST, Govt. of India.',
+                    'Optimized microfluidic routing in the biochips, reducing self-contamination.',
+                    'Contributed a blockchain supply-chain solution for Railway Cargo Systems using Solidity on Ethereum (presented at AISC 2024).'
+                ]
+            }
+        ];
+
+        const education = [
+            { degree: 'PhD (Applied Research in Electronics)', school: 'IIT Delhi • CARE', period: 'July 2025 — Present', grade: 'CGPA: 8.0/10.0', details: 'Research area: Quantum Machine Learning and optimization for 6G and beyond wireless networks. IndiaAI Fellow (Dec 2025).' },
+            { degree: 'M.Tech (Information Technology)', school: 'GCECT, Kolkata', period: 'July 2023 — May 2025', grade: 'CGPA: 8.76/10.0', details: 'Thesis: Quantum Cryptography and Post-Quantum Cryptographic Algorithms.' },
+            { degree: 'B.Tech (Computer Science & Engineering)', school: 'UEM, Kolkata', period: 'Graduated June 2022', grade: 'CGPA: 8.15/10.0', details: 'First Class with Distinction 💻.' }
+        ];
+
+        const skills = ['Qiskit ⚛️', 'Python 🐍', 'NumPy / SciPy 🔢', 'Quantum ML 🤖', 'QAOA / Optimization 📊', '6G & MIMO 📶', 'Blockchain ⛓️', 'MATLAB 📈', 'C++ 💻', 'LaTeX ✍️'];
+
+        const courses = ['Quantum Computing and Quantum Information', 'Machine Learning', 'Pattern Recognition', 'Advanced Algorithms', 'Advanced Engineering Mathematics', 'Advanced Software Engineering', 'Research Methodology and IPR'];
+
+        /* ====================== IMAGE LOADING ====================== */
+        const IMG_EXT = /\.(jpe?g|png|webp|gif|avif|svg)$/i;
+
+        function captionFromFile(name) {
+            return decodeURIComponent(name)
+                .replace(IMG_EXT, '')
+                .replace(/^\d+[-_ ]*/, '')
+                .replace(/[-_]+/g, ' ')
+                .replace(/^\w/, c => c.toUpperCase());
+        }
+
+        // Lists a repo folder via the GitHub API -> { images: [...], dirs: [...] } (cached per session).
+        async function listFolder(folder) {
+            const cacheKey = 'dir:' + folder;
+            try {
+                const cached = sessionStorage.getItem(cacheKey);
+                if (cached) return JSON.parse(cached);
+            } catch (e) {}
+            const empty = { images: [], dirs: [] };
+            try {
+                const url = `https://api.github.com/repos/${GITHUB.user}/${GITHUB.repo}/contents/${folder}?ref=${GITHUB.branch}`;
+                const res = await fetch(url);
+                if (!res.ok) return empty;
+                const items = await res.json();
+                if (!Array.isArray(items)) return empty;
+                const byName = (a, b) => a.name.localeCompare(b.name, undefined, { numeric: true });
+                const out = {
+                    images: items.filter(f => f.type === 'file' && IMG_EXT.test(f.name)).sort(byName)
+                        .map(f => ({ src: `${folder}/${encodeURIComponent(f.name)}`, caption: captionFromFile(f.name) })),
+                    dirs: items.filter(f => f.type === 'dir').sort(byName).map(f => f.name)
+                };
+                try { sessionStorage.setItem(cacheKey, JSON.stringify(out)); } catch (e) {}
+                return out;
+            } catch (e) {
+                return empty;
+            }
+        }
+        async function listFolderImages(folder) { return (await listFolder(folder)).images; }
+
+        function normalize(list) {
+            return list.map(i => typeof i === 'string' ? { src: i, caption: captionFromFile(i.split('/').pop()) } : i);
+        }
+
+        /* ====================== LIGHTBOX ====================== */
+        let lbItems = [], lbIndex = 0, lbLastFocus = null;
+
+        function openLightbox(items, index) {
+            lbItems = items; lbIndex = index; lbLastFocus = document.activeElement;
+            renderLightbox();
+            document.getElementById('lightbox').classList.add('open');
+            document.body.style.overflow = 'hidden';
+            document.querySelector('#lightbox button').focus();
+        }
+        function renderLightbox() {
+            const item = lbItems[lbIndex];
+            const img = document.getElementById('lb-img');
+            img.src = item.src; img.alt = item.caption || '';
+            document.getElementById('lb-caption').textContent = item.caption || '';
+            document.getElementById('lb-count').textContent = lbItems.length > 1 ? `${lbIndex + 1} / ${lbItems.length}` : '';
+            const multi = lbItems.length > 1;
+            document.getElementById('lb-prev').style.display = multi ? '' : 'none';
+            document.getElementById('lb-next').style.display = multi ? '' : 'none';
+        }
+        function stepLightbox(d) { lbIndex = (lbIndex + d + lbItems.length) % lbItems.length; renderLightbox(); }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('open');
+            document.body.style.overflow = '';
+            if (lbLastFocus) lbLastFocus.focus();
+        }
+        document.addEventListener('keydown', e => {
+            if (!document.getElementById('lightbox').classList.contains('open')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') stepLightbox(1);
+            if (e.key === 'ArrowLeft') stepLightbox(-1);
+        });
+        document.getElementById('lightbox').addEventListener('click', e => { if (e.target.id === 'lightbox') closeLightbox(); });
+
+        /* ====================== RENDERING ====================== */
         function toggleTheme() {
             const html = document.documentElement;
             html.classList.toggle('dark');
@@ -306,39 +532,12 @@
             document.getElementById('theme-icon-moon').classList.toggle('hidden');
         }
 
-        const publications = [
-            { authors: "D. Das, A.K. Paul, S. Paul", title: "Automated Alignment of Course Outcomes with Program Outcomes Using NLP Techniques", venue: "IEEE CIACON 2025 📚", doi: "10.1109/CIACON65473.2025.11189748", type: "CONFERENCE PAPER" },
-            { authors: "S. Paul and S. Chakraborty", title: "Hybrid QAOA for Efficient Blockchain Transaction Scheduling", venue: "IEEE ISACC 2025 🔗", doi: "10.1109/ISACC65211.2025.10969380", type: "CONFERENCE PAPER" },
-            { authors: "S. Paul, M.M. Maitra, S. Chakraborty", title: "Quantum Resistance Blockchain Algorithm using QHF and Novel Consensus", venue: "IEEE SCEECS 2025 🛡️", doi: "10.1109/SCEECS64059.2025.10940775", type: "CONFERENCE PAPER" },
-            { authors: "A. Sinharay, S. Paul, S. Chakraborty", title: "Partition Matching Maximum Zero-Sum Algorithm for VLSI Thermal Placement", venue: "IEEE RAIT 2025 🔥", doi: "10.1109/RAIT65068.2025.11088908", type: "CONFERENCE PAPER" },
-            { authors: "S. Paul, S. Chakraborty, H. Rahaman", title: "Optimizing Supply Chain Operations using Blockchain", venue: "AISC 2024 🚉", note: "Proceedings", type: "CONFERENCE PAPER" }
-        ];
-
-        const conferences = [
-            { name: "IEEE ISACC 2025", location: "Silchar", type: "Oral Paper Presentation", details: "Presenting findings on Hybrid QAOA for transaction scheduling." },
-            { name: "IEEE SCEECS 2025", location: "Bhopal", type: "Oral Paper Presentation", details: "Presenting on Quantum-Resistant Blockchain Algorithms." },
-            { name: "AISC 2024", location: "Kolkata", type: "Research Presentation", details: "International Conference on AI and Sustainable Computing." },
-            { name: "VLSID 2024", location: "Kolkata", type: "Participate as Fellow", details: "37th International Conference on VLSID 2024." }
-        ];
-
-        const researchExperience = [
-            { title: "PhD Research: QML & 6G Optimization", period: "2025 — Present", location: "IIT Delhi (CARE)", details: "Investigating hybrid quantum-classical algorithms for ultra-reliable resource allocation in decentralized networks." },
-            { title: "M.Tech Research: PQ Hybrid Systems", period: "2024 — 2025", location: "GCECT, Kolkata", details: "Bridge research between post-quantum cryptography and high-performance consensus mechanisms." },
-            { title: "Research Intern: DST-SERB Sponsored Project", period: "Jan — July 2024", location: "GCELT, Kolkata", details: "Optimized microfluidic routing for cyber-physical biochips. Sponsored by DST-SERB, Govt. of India." }
-        ];
-
-        const education = [
-            { degree: "PhD (Applied Research in Electronics)", school: "IIT Delhi", period: "2025 - Present", grade: "8.00/10.0", details: "Specialization: Quantum Machine Learning for 6G Optimization." },
-            { degree: "M.Tech (Information Technology)", school: "GCECT, Kolkata", period: "2023 - 2025", grade: "8.76/10.0", details: "Thesis on Quantum-Classical Hybrid Systems." },
-            { degree: "B.Tech (Computer Science)", school: "UEM, Kolkata", period: "2018 - 2022", grade: "8.15/10.0", details: "Graduated with Distinction 💻." }
-        ];
-
-        const skills = ["Qiskit ⚛️", "Python 🐍", "Quantum ML 🤖", "Optimization 📊", "Blockchain ⛓️", "6G Networks 📶", "MATLAB 📊", "LaTeX ✍️", "C++ 💻"];
-
         window.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             initBackground();
             injectContent();
+            loadTrekGallery();
+            loadPaperFigures();
             initArcadeEngine();
             startGame('runner');
             window.addEventListener('scroll', () => {
@@ -352,8 +551,24 @@
             const pubList = document.getElementById('pub-list');
             publications.forEach(pub => {
                 const div = document.createElement('div');
-                div.className = 'group p-6 sm:p-8 bg-white/[0.02] border border-sepia-muted/10 rounded-2xl hover:border-sepia-accent/30 transition-all relative overflow-hidden';
-                div.innerHTML = `<div class="flex justify-between items-start mb-4 sm:mb-6"><div class="text-sepia-muted font-mono text-[8px] sm:text-[9px] uppercase tracking-widest flex items-center gap-2"><span class="w-1.5 h-1.5 bg-sepia-accent rounded-full animate-pulse"></span> ${pub.venue}</div><span class="text-[7px] sm:text-[8px] font-bold uppercase tracking-widest px-2 py-1 bg-sepia-accent/10 text-sepia-accent border border-sepia-accent/20 rounded">${pub.type}</span></div><h4 class="text-lg sm:text-2xl font-bold mb-3 sm:mb-4 serif leading-tight italic group-hover:text-sepia-accent transition-colors">"${pub.title}"</h4><p class="text-sepia-muted text-xs sm:text-sm mb-4 sm:mb-6 font-light leading-relaxed">${pub.authors}</p><div class="pt-4 border-t border-sepia-muted/5">${pub.doi ? `<a href="https://doi.org/${pub.doi}" target="_blank" class="text-[9px] sm:text-[10px] font-bold text-sepia-accent hover:tracking-widest transition-all uppercase">DOI Record 🌐</a>` : `<span class="text-[8px] sm:text-[9px] text-sepia-muted uppercase font-bold">${pub.note}</span>`}</div>`;
+                div.className = 'group p-6 sm:p-8 bg-white/[0.02] border border-sepia-muted/10 rounded-2xl hover:border-sepia-accent/30 transition-all relative overflow-hidden flex flex-col';
+                const linkHtml = pub.doi
+                    ? `<a href="https://doi.org/${pub.doi}" target="_blank" class="text-[9px] sm:text-[10px] font-bold text-sepia-accent hover:tracking-widest transition-all uppercase">DOI Record 🌐</a>`
+                    : pub.link
+                        ? `<a href="${pub.link}" target="_blank" class="text-[9px] sm:text-[10px] font-bold text-sepia-accent hover:tracking-widest transition-all uppercase">${pub.linkLabel} 🌐</a>`
+                        : `<span class="text-[8px] sm:text-[9px] text-sepia-muted uppercase font-bold">${pub.note}</span>`;
+                div.innerHTML = `
+                    <div class="flex justify-between items-start gap-3 mb-4 sm:mb-6">
+                        <div class="text-sepia-muted font-mono text-[8px] sm:text-[9px] uppercase tracking-widest flex items-center gap-2"><span class="w-1.5 h-1.5 bg-sepia-accent rounded-full animate-pulse shrink-0"></span> ${pub.venue}</div>
+                        <span class="shrink-0 text-[7px] sm:text-[8px] font-bold uppercase tracking-widest px-2 py-1 bg-sepia-accent/10 text-sepia-accent border border-sepia-accent/20 rounded">${pub.type}</span>
+                    </div>
+                    <h4 class="text-lg sm:text-2xl font-bold mb-3 sm:mb-4 serif leading-tight italic group-hover:text-sepia-accent transition-colors">“${pub.title}”</h4>
+                    <p class="text-sepia-muted text-xs sm:text-sm mb-4 sm:mb-6 font-light leading-relaxed">${pub.authors}</p>
+                    <div id="figs-${pub.id}" class="hidden mb-5">
+                        <div class="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-sepia-muted mb-2 flex items-center gap-2"><i data-lucide="image" class="w-3 h-3"></i> Figures</div>
+                        <div class="fig-strip"></div>
+                    </div>
+                    <div class="pt-4 border-t border-sepia-muted/5 mt-auto">${linkHtml}</div>`;
                 pubList.appendChild(div);
             });
 
@@ -369,7 +584,8 @@
             researchExperience.forEach(exp => {
                 const div = document.createElement('div');
                 div.className = 'group relative pl-8 sm:pl-12 pb-12 sm:pb-16 border-l border-sepia-muted/10 last:pb-0';
-                div.innerHTML = `<div class="absolute left-[-6px] sm:left-[-8px] top-0 w-3 h-3 sm:w-4 sm:h-4 bg-sepia-accent rounded-full group-hover:scale-125 transition-transform duration-500 shadow-lg"></div><div class="text-sepia-muted font-mono text-[8px] sm:text-[10px] uppercase tracking-widest mb-1 sm:mb-2">${exp.period}</div><h3 class="text-xl sm:text-3xl font-bold serif mb-1 group-hover:text-sepia-accent transition-colors">${exp.title}</h3><div class="text-sepia-accent text-[9px] sm:text-[11px] font-bold uppercase tracking-widest mb-4 sm:mb-6 italic">${exp.location}</div><p class="text-sepia-muted text-sm sm:text-lg font-light leading-relaxed">${exp.details}</p>`;
+                const bullets = exp.details.map(d => `<li class="flex gap-3"><span class="mt-[0.7em] w-1.5 h-1.5 rounded-full bg-sepia-accent/60 shrink-0"></span><span>${d}</span></li>`).join('');
+                div.innerHTML = `<div class="absolute left-[-6px] sm:left-[-8px] top-0 w-3 h-3 sm:w-4 sm:h-4 bg-sepia-accent rounded-full group-hover:scale-125 transition-transform duration-500 shadow-lg"></div><div class="text-sepia-muted font-mono text-[8px] sm:text-[10px] uppercase tracking-widest mb-1 sm:mb-2">${exp.period}</div><h3 class="text-xl sm:text-3xl font-bold serif mb-1 group-hover:text-sepia-accent transition-colors">${exp.title}</h3><div class="text-sepia-accent text-[9px] sm:text-[11px] font-bold uppercase tracking-widest mb-4 sm:mb-6 italic">${exp.location}</div><ul class="text-sepia-muted text-sm sm:text-lg font-light leading-relaxed space-y-3">${bullets}</ul>`;
                 expList.appendChild(div);
             });
 
@@ -377,7 +593,7 @@
             education.forEach(edu => {
                 const div = document.createElement('div');
                 div.className = 'relative pl-8 sm:pl-10 border-l border-sepia-muted/10 group';
-                div.innerHTML = `<div class="absolute left-[-5px] sm:left-[-6px] top-0 w-[10px] h-[10px] sm:w-[12px] sm:h-[12px] bg-sepia-accent rounded-full group-hover:scale-150 transition-transform"></div><div class="text-sepia-muted font-mono text-[8px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] mb-3 sm:mb-4">${edu.period}</div><h3 class="text-xl sm:text-3xl font-bold serif leading-tight mb-1 sm:mb-2">${edu.degree}</h3><div class="text-[10px] sm:text-[12px] font-bold uppercase tracking-[0.1em] sm:tracking-[0.2em] text-sepia-accent mb-4 sm:mb-6">${edu.school}</div><p class="text-sepia-muted text-sm sm:text-lg font-light leading-relaxed max-w-2xl mb-6 sm:mb-8">${edu.details}</p><div class="inline-block px-4 sm:px-5 py-1.5 sm:py-2 border border-sepia-muted/20 text-[9px] sm:text-[11px] font-bold uppercase tracking-widest text-sepia-accent bg-sepia-accent/5">CGPA: ${edu.grade}</div>`;
+                div.innerHTML = `<div class="absolute left-[-5px] sm:left-[-6px] top-0 w-[10px] h-[10px] sm:w-[12px] sm:h-[12px] bg-sepia-accent rounded-full group-hover:scale-150 transition-transform"></div><div class="text-sepia-muted font-mono text-[8px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] mb-3 sm:mb-4">${edu.period}</div><h3 class="text-xl sm:text-3xl font-bold serif leading-tight mb-1 sm:mb-2">${edu.degree}</h3><div class="text-[10px] sm:text-[12px] font-bold uppercase tracking-[0.1em] sm:tracking-[0.2em] text-sepia-accent mb-4 sm:mb-6">${edu.school}</div><p class="text-sepia-muted text-sm sm:text-lg font-light leading-relaxed max-w-2xl mb-6 sm:mb-8">${edu.details}</p><div class="inline-block px-4 sm:px-5 py-1.5 sm:py-2 border border-sepia-muted/20 text-[9px] sm:text-[11px] font-bold uppercase tracking-widest text-sepia-accent bg-sepia-accent/5">${edu.grade}</div>`;
                 eduList.appendChild(div);
             });
 
@@ -388,7 +604,119 @@
                 span.innerText = skill;
                 skillContainer.appendChild(span);
             });
+
+            const courseList = document.getElementById('courses-list');
+            courses.forEach(c => {
+                const li = document.createElement('li');
+                li.textContent = c;
+                courseList.appendChild(li);
+            });
+
             lucide.createIcons();
+        }
+
+        // Each subfolder of images/treks/ is one trek (album). Loose files go into "More trails".
+        let trekAll = [], trekShown = [], trekVisible = 0, trekFilter = 'all';
+
+        async function loadTrekGallery() {
+            let photos = [];
+            if (TREK_PHOTOS_MANUAL.length) {
+                photos = normalize(TREK_PHOTOS_MANUAL).map(p => ({ ...p, album: p.album || 'Treks' }));
+            } else {
+                const root = await listFolder(TREK_FOLDER);
+                const albums = await Promise.all(root.dirs.map(async d => {
+                    const imgs = await listFolderImages(`${TREK_FOLDER}/${encodeURIComponent(d)}`);
+                    const album = captionFromFile(d);
+                    return imgs.map(p => ({ ...p, album, caption: `${album} • ${p.caption}` }));
+                }));
+                photos = albums.flat();
+                if (root.images.length) photos = photos.concat(root.images.map(p => ({ ...p, album: 'More trails' })));
+            }
+            document.getElementById('trek-loading').remove();
+            if (!photos.length) { document.getElementById('trek-empty').classList.remove('hidden'); return; }
+            trekAll = photos;
+
+            const albumNames = [...new Set(photos.map(p => p.album))];
+            if (albumNames.length > 1) {
+                const bar = document.getElementById('trek-filters');
+                const mk = (key, label, count) => {
+                    const b = document.createElement('button');
+                    b.type = 'button';
+                    b.dataset.key = key;
+                    b.className = 'trek-chip px-4 py-2 rounded-full border text-[9px] sm:text-[11px] font-bold uppercase tracking-widest transition-colors';
+                    b.innerHTML = `${label} <span class="opacity-60">${count}</span>`;
+                    b.addEventListener('click', () => setTrekFilter(key));
+                    bar.appendChild(b);
+                };
+                mk('all', 'All', photos.length);
+                albumNames.forEach(a => mk(a, a, photos.filter(p => p.album === a).length));
+                bar.classList.remove('hidden');
+                bar.classList.add('flex');
+            }
+            document.getElementById('trek-more').addEventListener('click', renderMoreTreks);
+            setTrekFilter('all');
+        }
+
+        function setTrekFilter(key) {
+            trekFilter = key;
+            document.querySelectorAll('.trek-chip').forEach(c => {
+                const on = c.dataset.key === key;
+                c.setAttribute('aria-pressed', on);
+                c.classList.toggle('bg-sepia-accent', on);
+                c.classList.toggle('text-sepia-dark', on);
+                c.classList.toggle('border-sepia-accent', on);
+                c.classList.toggle('text-sepia-muted', !on);
+                c.classList.toggle('border-sepia-muted/20', !on);
+            });
+            trekShown = key === 'all' ? trekAll : trekAll.filter(p => p.album === key);
+            trekVisible = 0;
+            document.getElementById('trek-grid').innerHTML = '';
+            renderMoreTreks();
+        }
+
+        function renderMoreTreks() {
+            const grid = document.getElementById('trek-grid');
+            const next = trekShown.slice(trekVisible, trekVisible + TREK_PAGE_SIZE);
+            next.forEach((p, k) => {
+                const i = trekVisible + k;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'trek-item group relative block w-full overflow-hidden rounded-xl border border-sepia-muted/10 bg-sepia-muted/[0.05] text-left';
+                btn.setAttribute('aria-label', `Open photo: ${p.caption}`);
+                btn.innerHTML = `
+                    <img src="${p.src}" alt="${p.caption}" loading="lazy" decoding="async" class="w-full h-auto block transition-transform duration-700 group-hover:scale-[1.03]">
+                    <span class="absolute inset-x-0 bottom-0 p-3 sm:p-4 bg-gradient-to-t from-black/70 to-transparent text-[#faedcd] serif italic text-base sm:text-lg opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity">${p.caption}</span>`;
+                btn.querySelector('img').onerror = () => btn.remove();
+                btn.addEventListener('click', () => openLightbox(trekShown, i));
+                grid.appendChild(btn);
+            });
+            trekVisible += next.length;
+            const more = document.getElementById('trek-more');
+            const left = trekShown.length - trekVisible;
+            more.classList.toggle('hidden', left <= 0);
+            more.textContent = `Show more photos (${left})`;
+        }
+
+        async function loadPaperFigures() {
+            await Promise.all(publications.map(async pub => {
+                const figs = pub.figures && pub.figures.length
+                    ? normalize(pub.figures)
+                    : await listFolderImages(`images/papers/${pub.id}`);
+                if (!figs.length) return;
+                const wrap = document.getElementById(`figs-${pub.id}`);
+                const strip = wrap.querySelector('.fig-strip');
+                figs.forEach((f, i) => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'w-24 h-20 sm:w-28 sm:h-24 rounded-lg overflow-hidden border border-sepia-muted/20 bg-white hover:border-sepia-accent transition-colors';
+                    btn.setAttribute('aria-label', `Open figure: ${f.caption}`);
+                    btn.innerHTML = `<img src="${f.src}" alt="${f.caption}" loading="lazy" class="w-full h-full object-contain">`;
+                    btn.querySelector('img').onerror = () => btn.remove();
+                    btn.addEventListener('click', () => openLightbox(figs, i));
+                    strip.appendChild(btn);
+                });
+                wrap.classList.remove('hidden');
+            }));
         }
 
         function handleImageError(img) {
@@ -399,17 +727,17 @@
 
         function initBackground() {
             const svg = document.getElementById('entanglement-svg');
-            if(!svg) return;
-            const count = 25;
-            for (let i = 0; i < count; i++) {
-                const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                c.setAttribute("r", Math.random() * 2.5 + 0.5);
-                c.setAttribute("fill", "#d4a373");
+            if (!svg) return;
+            for (let i = 0; i < 25; i++) {
+                const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                c.setAttribute('r', Math.random() * 2.5 + 0.5);
+                c.setAttribute('fill', '#d4a373');
                 c.innerHTML = `<animate attributeName="cx" values="${Math.random()*100}%;${Math.random()*100}%" dur="${30+Math.random()*20}s" repeatCount="indefinite" /><animate attributeName="cy" values="${Math.random()*100}%;${Math.random()*100}%" dur="${30+Math.random()*20}s" repeatCount="indefinite" /><animate attributeName="opacity" values="0.05;0.2;0.05" dur="5s" repeatCount="indefinite" />`;
                 svg.appendChild(c);
             }
         }
 
+        /* ====================== ARCADE ====================== */
         let canvas, ctx, gameLoop, currentGame = null, score = 0, gameState = 'STOPPED';
         const keys = {};
 
@@ -417,28 +745,27 @@
             canvas = document.getElementById('mainCanvas');
             const interactionLayer = document.getElementById('gameInteractionLayer');
             ctx = canvas.getContext('2d');
-            
+
             window.addEventListener('keydown', e => {
-                if (['Space', 'ArrowUp', 'KeyW'].includes(e.code) && gameState === 'RUNNING') {
-                    e.preventDefault(); // Stop scrolling
-                }
+                if (document.getElementById('lightbox').classList.contains('open')) return;
+                if (['Space', 'ArrowUp', 'KeyW'].includes(e.code) && gameState === 'RUNNING' && isGameVisible()) e.preventDefault();
                 keys[e.code] = true;
             });
             window.addEventListener('keyup', e => keys[e.code] = false);
 
             const triggerJump = (e) => {
-                if(gameState === 'RUNNING') {
-                    if (e.cancelable) e.preventDefault();
-                    currentGame.jump();
-                } else if (gameState === 'GAMEOVER') {
-                    restartGame();
-                }
+                if (gameState === 'RUNNING') { if (e.cancelable) e.preventDefault(); currentGame.jump(); }
+                else if (gameState === 'GAMEOVER') restartGame();
             };
-
             interactionLayer.addEventListener('mousedown', triggerJump);
-            interactionLayer.addEventListener('touchstart', triggerJump, {passive: false});
-
+            interactionLayer.addEventListener('touchstart', triggerJump, { passive: false });
             window.addEventListener('resize', () => { if (gameState === 'RUNNING') resizeCanvas(); });
+        }
+
+        // Only hijack the spacebar when the game is on screen, so it still scrolls the page elsewhere.
+        function isGameVisible() {
+            const r = document.getElementById('gameInteractionLayer').getBoundingClientRect();
+            return r.top < window.innerHeight && r.bottom > 0;
         }
 
         function resizeCanvas() {
@@ -450,114 +777,75 @@
 
         const Games = {
             runner: {
-                init() { 
-                    this.p = { x: 50, y: 150, w: 24, h: 24, dy: 0, j: -9, g: 0.5 }; 
-                    this.obs = []; 
-                    this.timer = 0; 
-                    this.animFrame = 0;
-                    this.cycleSpeed = 0.0005; // Much slower cycle
-                    
-                    // Generate mountains/forest
+                init() {
+                    this.p = { x: 50, y: 150, w: 24, h: 24, dy: 0, j: -9, g: 0.5 };
+                    this.obs = []; this.timer = 0; this.animFrame = 0; this.cycleSpeed = 0.0005;
                     this.mountains = [];
-                    for(let i=0; i<5; i++) this.mountains.push({x: i * 200, w: 150 + Math.random() * 100, h: 80 + Math.random() * 60});
+                    for (let i = 0; i < 5; i++) this.mountains.push({ x: i * 200, w: 150 + Math.random() * 100, h: 80 + Math.random() * 60 });
                     this.forest = [];
-                    for(let i=0; i<15; i++) this.forest.push({x: i * 60, h: 30 + Math.random() * 40});
+                    for (let i = 0; i < 15; i++) this.forest.push({ x: i * 60, h: 30 + Math.random() * 40 });
                 },
                 update() {
-                    if (keys['Space'] || keys['ArrowUp'] || keys['KeyW']) this.jump();
-                    this.p.dy += this.p.g; 
-                    this.p.y += this.p.dy;
+                    if (isGameVisible() && (keys['Space'] || keys['ArrowUp'] || keys['KeyW'])) this.jump();
+                    this.p.dy += this.p.g; this.p.y += this.p.dy;
                     if (this.p.y > canvas.height - 34) { this.p.y = canvas.height - 34; this.p.dy = 0; }
-                    
-                    if (this.timer <= 0) { 
-                        this.obs.push({ x: canvas.width, w: 18, h: 20 + Math.random() * 25, type: Math.random() > 0.5 ? 'tall' : 'wide' }); 
-                        this.timer = 80 + Math.random() * 60; 
+                    if (this.timer <= 0) {
+                        this.obs.push({ x: canvas.width, w: 18, h: 20 + Math.random() * 25 });
+                        this.timer = 80 + Math.random() * 60;
                     }
                     this.timer--;
-                    
-                    this.obs.forEach((o, i) => {
+                    for (let i = this.obs.length - 1; i >= 0; i--) {
+                        const o = this.obs[i];
                         o.x -= 5 + (score / 500);
-                        if (this.p.x < o.x + o.w && this.p.x + this.p.w > o.x && this.p.y + this.p.h > canvas.height - o.h - 10) return endGame();
-                        if (o.x + o.w < 0) { 
-                            this.obs.splice(i, 1); 
-                            score += 10; 
-                            updateScore(); 
-                        }
-                    });
+                        if (this.p.x < o.x + o.w && this.p.x + this.p.w > o.x && this.p.y + this.p.h > canvas.height - o.h - 10) { endGame(); return; }
+                        if (o.x + o.w < 0) { this.obs.splice(i, 1); score += 10; updateScore(); }
+                    }
                     this.animFrame++;
                 },
                 jump() { if (this.p.y >= canvas.height - 35) this.p.dy = this.p.j; },
                 draw() {
                     const time = this.animFrame * this.cycleSpeed;
                     const sinTime = Math.sin(time);
-                    
-                    // Sky Color
                     let r, g, b;
-                    if (sinTime > 0) { // Day
-                        r = 135 + (20 * (1 - sinTime));
-                        g = 206 + (20 * (1 - sinTime));
-                        b = 235 + (20 * (1 - sinTime));
-                    } else { // Night
-                        r = 10 + (30 * (1 + sinTime));
-                        g = 15 + (40 * (1 + sinTime));
-                        b = 40 + (60 * (1 + sinTime));
-                    }
+                    if (sinTime > 0) { r = 135 + 20 * (1 - sinTime); g = 206 + 20 * (1 - sinTime); b = 235 + 20 * (1 - sinTime); }
+                    else { r = 10 + 30 * (1 + sinTime); g = 15 + 40 * (1 + sinTime); b = 40 + 60 * (1 + sinTime); }
                     ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                    // Sun/Moon
-                    const sunX = (canvas.width / 2) + Math.cos(time) * (canvas.width / 2);
-                    const sunY = (canvas.height / 1.1) + Math.sin(time) * (canvas.width / 2);
-                    const moonX = (canvas.width / 2) + Math.cos(time + Math.PI) * (canvas.width / 2);
-                    const moonY = (canvas.height / 1.1) + Math.sin(time + Math.PI) * (canvas.width / 2);
+                    const sunX = canvas.width / 2 + Math.cos(time) * (canvas.width / 2);
+                    const sunY = canvas.height / 1.1 + Math.sin(time) * (canvas.width / 2);
+                    const moonX = canvas.width / 2 + Math.cos(time + Math.PI) * (canvas.width / 2);
+                    const moonY = canvas.height / 1.1 + Math.sin(time + Math.PI) * (canvas.width / 2);
+                    ctx.fillStyle = '#FFD700'; ctx.beginPath(); ctx.arc(sunX, sunY, 22, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#EEE'; ctx.beginPath(); ctx.arc(moonX, moonY, 16, 0, Math.PI * 2); ctx.fill();
 
-                    ctx.fillStyle = '#FFD700';
-                    ctx.beginPath(); ctx.arc(sunX, sunY, 22, 0, Math.PI * 2); ctx.fill();
-                    ctx.fillStyle = '#EEE';
-                    ctx.beginPath(); ctx.arc(moonX, moonY, 16, 0, Math.PI * 2); ctx.fill();
-
-                    // Mountains (Parallax)
                     ctx.fillStyle = sinTime > 0 ? 'rgba(100, 100, 120, 0.4)' : 'rgba(30, 30, 50, 0.6)';
                     this.mountains.forEach(m => {
-                        let mx = (m.x - (this.animFrame * 0.5)) % (canvas.width + 200);
-                        if(mx < -200) mx += (canvas.width + 400);
-                        ctx.beginPath();
-                        ctx.moveTo(mx, canvas.height - 10);
-                        ctx.lineTo(mx + m.w / 2, canvas.height - 10 - m.h);
-                        ctx.lineTo(mx + m.w, canvas.height - 10);
-                        ctx.fill();
+                        let mx = (m.x - this.animFrame * 0.5) % (canvas.width + 200);
+                        if (mx < -200) mx += canvas.width + 400;
+                        ctx.beginPath(); ctx.moveTo(mx, canvas.height - 10); ctx.lineTo(mx + m.w / 2, canvas.height - 10 - m.h); ctx.lineTo(mx + m.w, canvas.height - 10); ctx.fill();
                     });
-
-                    // Forest (Parallax)
                     ctx.fillStyle = sinTime > 0 ? 'rgba(34, 139, 34, 0.3)' : 'rgba(0, 50, 0, 0.5)';
                     this.forest.forEach(t => {
-                        let tx = (t.x - (this.animFrame * 1.5)) % (canvas.width + 100);
-                        if(tx < -100) tx += (canvas.width + 200);
-                        ctx.beginPath();
-                        ctx.moveTo(tx, canvas.height - 10);
-                        ctx.lineTo(tx + 10, canvas.height - 10 - t.h);
-                        ctx.lineTo(tx + 20, canvas.height - 10);
-                        ctx.fill();
+                        let tx = (t.x - this.animFrame * 1.5) % (canvas.width + 100);
+                        if (tx < -100) tx += canvas.width + 200;
+                        ctx.beginPath(); ctx.moveTo(tx, canvas.height - 10); ctx.lineTo(tx + 10, canvas.height - 10 - t.h); ctx.lineTo(tx + 20, canvas.height - 10); ctx.fill();
                     });
 
-                    // Floor
-                    ctx.strokeStyle = sinTime > 0 ? '#3e342e' : '#faedcd'; 
+                    ctx.strokeStyle = sinTime > 0 ? '#3e342e' : '#faedcd';
                     ctx.lineWidth = 2;
                     ctx.beginPath(); ctx.moveTo(0, canvas.height - 10); ctx.lineTo(canvas.width, canvas.height - 10); ctx.stroke();
-                    
-                    // Obstacles (Plants/Cacti)
+
                     this.obs.forEach(o => {
-                        ctx.fillStyle = '#2d5a27'; // Dark green for plants
-                        ctx.fillRect(o.x + 6, canvas.height - o.h - 10, o.w - 12, o.h); // Main stem
-                        ctx.fillRect(o.x, canvas.height - o.h - 2, o.w, 4); // Base leaves
-                        // Branches
+                        ctx.fillStyle = '#2d5a27';
+                        ctx.fillRect(o.x + 6, canvas.height - o.h - 10, o.w - 12, o.h);
+                        ctx.fillRect(o.x, canvas.height - o.h - 2, o.w, 4);
                         ctx.fillRect(o.x, canvas.height - o.h - 8, 6, 3);
                         ctx.fillRect(o.x + o.w - 6, canvas.height - o.h - 4, 6, 3);
                     });
 
-                    // Pixel Bunny
                     const bx = this.p.x, by = this.p.y;
-                    ctx.fillStyle = '#faedcd'; 
+                    ctx.fillStyle = '#faedcd';
                     ctx.fillRect(bx, by + 8, 20, 12);
                     ctx.fillRect(bx + 4, by, 12, 10);
                     ctx.fillRect(bx + 4, by - 12 + (this.p.dy < 0 ? -4 : 0), 4, 14);
@@ -572,27 +860,26 @@
         };
 
         function startGame(key) {
-            document.getElementById('gameContainer').classList.remove('hidden');
             document.getElementById('gameOverlay').classList.add('hidden');
             resizeCanvas();
             score = 0; updateScore();
             currentGame = Games[key]; currentGame.init();
             gameState = 'RUNNING';
             if (gameLoop) cancelAnimationFrame(gameLoop);
-            function loop(time) { if (gameState === 'RUNNING') { currentGame.update(time); currentGame.draw(); gameLoop = requestAnimationFrame(loop); } }
+            function loop() {
+                if (gameState === 'RUNNING') { currentGame.update(); currentGame.draw(); gameLoop = requestAnimationFrame(loop); }
+            }
             gameLoop = requestAnimationFrame(loop);
         }
-
         function restartGame() { startGame('runner'); }
-        function endGame() { 
-            gameState = 'GAMEOVER'; 
-            document.getElementById('gameOverlay').classList.remove('hidden'); 
-            document.getElementById('overlayMessage').innerText = `Quantum Index: ${score}`; 
+        function endGame() {
+            gameState = 'GAMEOVER';
+            document.getElementById('gameOverlay').classList.remove('hidden');
+            document.getElementById('overlayMessage').innerText = `Quantum Index: ${score}`;
         }
-
-        function updateScore() { 
-            const scoreDisplay = document.getElementById('scoreDisplay');
-            if (scoreDisplay) scoreDisplay.innerText = `SCORE: ${score.toString().padStart(3, '0')}`; 
+        function updateScore() {
+            const el = document.getElementById('scoreDisplay');
+            if (el) el.innerText = `SCORE: ${score.toString().padStart(3, '0')}`;
         }
     </script>
 </body>
