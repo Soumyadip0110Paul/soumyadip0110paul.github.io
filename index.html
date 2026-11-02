@@ -81,7 +81,7 @@
     </script>
     <script>
         // Profile photo: tries common names/extensions before showing a placeholder icon.
-        const PROFILE_CANDIDATES = ['images/profile.jpg', 'images/profile.jpeg', 'images/profile.png', 'images/profile.JPG', 'images/profile.JPEG', 'images/profile.PNG', 'images/Profile.jpg', 'profile.jpg', 'profile.jpeg', 'profile.png', 'WhatsApp Image 2025-12-16 at 18.18.47.jpeg'];
+        const PROFILE_CANDIDATES = ['images/profile.jpg', 'images/profile.jpeg', 'images/profile.png', 'images/profile.JPG', 'images/profile.JPEG', 'images/profile.PNG', 'images/Profile.jpg', 'profile.jpg', 'profile.jpeg', 'profile.png'];
         function handleImageError(img) {
             const tried = parseInt(img.dataset.tried || '0', 10) + 1;
             img.dataset.tried = tried;
@@ -475,17 +475,12 @@
         /* ====================== IMAGE LOADING ====================== */
         const IMG_EXT = /\.(jpe?g|png|webp|gif|avif|svg)$/i;
 
-        const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         function captionFromFile(name) {
-            let base = decodeURIComponent(name).replace(IMG_EXT, '');
-            // Phone camera names: 20260726_075132, IMG_20260726_075132, PXL_20260726...
-            const d = base.match(/(?:^|[^0-9])(20\d{2})(\d{2})(\d{2})[_-]?\d{0,9}/);
-            if (d && /^(IMG|PXL|VID|DSC)?[_-]?\d{8}[_-]?\d*([_-].*)?$/i.test(base)) {
-                return `${+d[3]} ${MONTHS[+d[2] - 1] || ''} ${d[1]}`.trim();
-            }
-            base = base.replace(/^\d+[-_ ]+/, '').replace(/[-_]+/g, ' ').trim();
-            if (base === base.toUpperCase()) base = base.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
-            return base.replace(/^\w/, c => c.toUpperCase());
+            return decodeURIComponent(name)
+                .replace(IMG_EXT, '')
+                .replace(/^\d+[-_ ]*/, '')
+                .replace(/[-_]+/g, ' ')
+                .replace(/^\w/, c => c.toUpperCase());
         }
 
         // Lists a folder -> { images: [...], dirs: [...], error }.
@@ -512,9 +507,6 @@
                 const cached = sessionStorage.getItem(cacheKey);
                 if (cached) return JSON.parse(cached);
             } catch (e) {}
-
-            // Preferred: the list built automatically on every upload (no GitHub request limits).
-            if (Array.isArray(window.PHOTO_LIST) && window.PHOTO_LIST.length) return listFromPhotoList(folder);
 
             if (GITHUB) {
                 try {
