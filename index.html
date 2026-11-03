@@ -1,587 +1,886 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Soumyadip Paul | Quantum & Wireless Research</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@300;400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --accent: #d4a373;
-            --muted: #8b5e3c;
-            --dark-bg: #0a0908;
-            --light-bg: #fdfaf6;
-        }
-        body {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1rem;
-            transition: background-color 0.5s ease, color 0.5s ease;
-            scrollbar-gutter: stable;
-            line-height: 1.6;
-        }
-        @media (min-width: 768px) {
-            body { font-size: 1.25rem; line-height: 1.8; }
-        }
-        h1, h2, h3, h4, .serif {
-            font-family: 'Crimson Pro', serif;
-        }
-        .arcade-font {
-            font-family: 'Press+Start+2P', cursive;
-            font-size: 0.5rem;
-        }
-        @media (min-width: 640px) {
-            .arcade-font { font-size: 0.6rem; }
-        }
-        .sepia-overlay {
-            background: radial-gradient(circle at 50% 0%, #d2b48c22 0%, transparent 70%);
-        }
-        .dark .sepia-overlay {
-            background: radial-gradient(circle at 50% 0%, #1a1614 0%, transparent 70%);
-        }
-        
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { 
-            background: #3e342e; 
-            border-radius: 10px;
-            border: 2px solid transparent;
-            background-clip: content-box;
-        }
-        
-        .game-canvas {
-            image-rendering: pixelated;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
-            border: 2px solid #3e342e;
-            border-radius: 8px;
-            width: 100%;
-            height: auto;
-            touch-action: none;
-            background: #87CEEB;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#060B16">
+<title>Soumyadip Paul — Quantum ML for 6G, IIT Delhi</title>
+<meta name="description" content="Soumyadip Paul, PhD Research Scholar and IndiaAI Fellow at CARE, IIT Delhi. Quantum machine learning and optimization for 6G and beyond wireless networks.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚛️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060B16;
+  --panel: #0B1424;
+  --panel-2: #0F1B30;
+  --line: #1A2942;
+  --wire: #22385A;
+  --ink: #DDE7F5;
+  --muted: #8496B2;
+  --cyan: #3EE6F0;
+  --cyan-dim: rgba(62, 230, 240, 0.14);
+  --violet: #9C8CFF;
+  --head: 'Sora', 'Segoe UI', system-ui, sans-serif;
+  --body: 'IBM Plex Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: 70px; overflow-x: clip; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 15.5px/1.6 var(--body); -webkit-font-smoothing: antialiased; overflow-x: clip; }
+a { color: var(--cyan); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { font-family: var(--head); margin: 0; font-weight: 600; letter-spacing: -0.01em; }
+button { font: inherit; color: inherit; }
+img { max-width: 100%; }
+.wrap { max-width: 1140px; margin: 0 auto; padding: 0 28px; }
 
-        .gradient-border {
-            position: relative;
-            background: rgba(212, 163, 115, 0.05);
-            padding: 1px;
-            border-radius: 1rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(212, 163, 115, 0.1);
-        }
+/* ---------- Top bar ---------- */
+.topbar {
+  position: sticky; top: 0; z-index: 30;
+  background: rgba(6, 11, 22, 0.86); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 31; background: rgba(6, 11, 22, 0.86); }
+.topbar .wrap { display: flex; align-items: center; gap: 24px; height: 56px; }
+.brand { font-family: var(--mono); font-size: 0.92rem; color: var(--ink); white-space: nowrap; }
+.brand span { color: var(--cyan); }
+.toc { display: flex; gap: 2px; margin-left: auto; overflow-x: auto; scrollbar-width: none; }
+.toc::-webkit-scrollbar { display: none; }
+.toc a { flex: 0 0 auto; padding: 6px 11px; border-radius: 6px; color: var(--muted); font-size: 0.88rem; }
+.toc a:hover { color: var(--ink); text-decoration: none; background: var(--panel); }
+.toc a.active { color: var(--cyan); background: var(--cyan-dim); }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(3deg); }
-        }
-        .doodle {
-            animation: float 18s ease-in-out infinite;
-            filter: blur(1.5px);
-        }
+/* ---------- Hero with quantum circuit ---------- */
+.hero { position: relative; border-bottom: 1px solid var(--line); overflow: hidden; }
+.circuit { position: absolute; inset: 0; width: 100%; height: 100%; }
+.circuit .w { stroke: var(--wire); stroke-width: 1.2; }
+.circuit .g rect { fill: var(--bg); stroke: #2D4A72; stroke-width: 1.2; }
+.circuit .g text { fill: #5E7DA6; font: 500 13px var(--mono); text-anchor: middle; dominant-baseline: central; }
+.circuit .c { stroke: #2D4A72; stroke-width: 1.2; fill: none; }
+.circuit .dot { fill: #2D4A72; }
+.circuit .pulse { stroke: var(--cyan); stroke-width: 2; fill: none; stroke-linecap: round; stroke-dasharray: 90 1600; stroke-dashoffset: 90; opacity: 0; filter: drop-shadow(0 0 6px var(--cyan)); }
+@media (prefers-reduced-motion: no-preference) {
+  .circuit .pulse { animation: run 2.6s cubic-bezier(.5, 0, .3, 1) forwards; }
+  .circuit .pulse:nth-of-type(2) { animation-delay: .25s; }
+  .circuit .pulse:nth-of-type(3) { animation-delay: .5s; }
+}
+@keyframes run { 0% { stroke-dashoffset: 90; opacity: 1; } 85% { opacity: 1; } 100% { stroke-dashoffset: -1500; opacity: 0; } }
+.hero-fade { position: absolute; inset: 0; background: linear-gradient(90deg, var(--bg) 0%, rgba(6,11,22,.92) 45%, rgba(6,11,22,.35) 100%); }
+.hero .wrap { position: relative; display: grid; grid-template-columns: 148px minmax(0, 1fr); gap: 32px; align-items: center; padding-top: 44px; padding-bottom: 44px; }
+.portrait {
+  width: 148px; height: 148px; border-radius: 50%; overflow: hidden; display: grid; place-items: center;
+  background: var(--panel); border: 2px solid var(--cyan);
+  box-shadow: 0 0 0 6px var(--cyan-dim), 0 0 36px rgba(62, 230, 240, 0.25);
+}
+.portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.portrait svg { width: 56px; height: 56px; color: var(--cyan); }
+.hero h1 { font-size: clamp(2rem, 4.6vw, 3.3rem); line-height: 1.04; font-weight: 700; letter-spacing: -0.02em; }
+.hero .role { margin: 10px 0 0; color: var(--muted); font-size: 1.02rem; max-width: 60ch; }
+.hero .role b { color: var(--ink); font-weight: 500; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; align-items: center; }
+.btn {
+  display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 14px; border-radius: 8px;
+  border: 1px solid var(--line); background: var(--panel); color: var(--ink); font-size: 0.88rem; font-weight: 500; cursor: pointer;
+}
+.btn:hover { border-color: var(--cyan); color: var(--cyan); text-decoration: none; }
+.btn svg { width: 15px; height: 15px; }
+.btn.primary { background: var(--cyan); border-color: var(--cyan); color: #04121A; }
+.btn.primary:hover { color: #04121A; box-shadow: 0 0 18px rgba(62, 230, 240, .45); }
+.btn.round { width: 36px; padding: 0; justify-content: center; }
+.fellow { display: inline-flex; align-items: center; gap: 6px; font-size: 0.86rem; color: var(--violet); font-weight: 500; margin-left: 6px; }
 
-        html {
-            scroll-behavior: smooth;
-        }
+/* ---------- Sections ---------- */
+main { padding: 8px 0 40px; }
+section { padding: 34px 0 6px; }
+h2.ket { font-family: var(--mono); font-weight: 500; font-size: 1.15rem; color: var(--ink); margin-bottom: 14px; letter-spacing: 0; }
+h2.ket::before { content: "|"; color: var(--cyan); margin-right: 1px; }
+h2.ket::after { content: "⟩"; color: var(--cyan); margin-left: 1px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; }
+.grid-about { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 16px; }
+.lede { font-family: var(--head); font-size: 1.22rem; line-height: 1.45; margin: 0 0 10px; }
+.muted { color: var(--muted); }
+.small { font-size: 0.88rem; }
+.panel p { margin: 0 0 10px; }
+.panel p:last-child { margin-bottom: 0; }
+.facts { display: grid; gap: 12px; }
+.fact { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: center; }
+.fact svg { width: 34px; height: 34px; padding: 7px; border-radius: 8px; background: var(--cyan-dim); color: var(--cyan); }
+.fact b { display: block; font-weight: 600; font-size: 0.95rem; }
+.fact span { color: var(--muted); font-size: 0.85rem; }
 
-        .btn-primary {
-            background: var(--accent);
-            color: var(--dark-bg);
-            transition: all 0.4s ease;
-        }
-        .btn-primary:hover {
-            letter-spacing: 0.1em;
-            box-shadow: 0 0 15px rgba(212, 163, 115, 0.4);
-        }
-            :root { --accent:#6d5dfc; --muted:#64748b; --dark-bg:#080b16; --light-bg:#f8fafc; }
-        body {font-family:'Space Grotesk',sans-serif;font-size:16px;line-height:1.7}
-        h1,h2,h3,h4,.serif {font-family:'Space Grotesk',sans-serif}
-        .arcade-font {font-family:monospace}
-        body.bg-sepia-light {background:#f8fafc!important;color:#111827!important}
-        html.dark body {background:#080b16!important;color:#e5e7eb!important}
-        .text-sepia-accent {color:#6d5dfc!important}.dark .text-sepia-accent{color:#a99cff!important}
-        .text-sepia-muted{color:#64748b!important}.dark .text-sepia-muted{color:#9ca3af!important}
-        .bg-sepia-accent{background:#6d5dfc!important}.text-sepia-dark{color:#111827!important}
-        .dark .text-sepia-dark{color:#f3f4f6!important}
-        .btn-primary{background:#6d5dfc!important;color:white!important;border-radius:12px!important}
-        nav{background:rgba(248,250,252,.86)!important;border-color:#e2e8f0!important}
-        .dark nav{background:rgba(8,11,22,.86)!important;border-color:#1f2937!important}
-        .sepia-overlay{background:radial-gradient(ellipse at 70% 20%,#6d5dfc12,transparent 60%)}
-        .dark .sepia-overlay{background:radial-gradient(ellipse at 70% 20%,#6d5dfc18,transparent 60%)}
-        .rounded-2xl,.rounded-xl{border-radius:20px}section{scroll-margin-top:90px}
-        #experience .group,#pub-list>div,#conf-list>div{background:#ffffffaa;border:1px solid #e2e8f0;border-radius:20px;padding:24px}
-        .dark #experience .group,.dark #pub-list>div,.dark #conf-list>div{background:#0e1425;border-color:#263047}
-        #exp-list .group{border-left:2px solid #6d5dfc33}
-        @media(min-width:768px){body{font-size:17px;line-height:1.75}}
+/* Rows used by the CV renderer */
+.row { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 16px; padding: 11px 0; }
+.row + .row { border-top: 1px solid var(--line); }
+.when { font-family: var(--mono); color: var(--violet); font-size: 0.78rem; padding-top: 3px; }
+.row h3 { font-size: 1.02rem; line-height: 1.35; }
+.where { color: var(--muted); font-size: 0.88rem; margin-top: 2px; }
+.grade { float: right; font-family: var(--mono); font-size: 0.8rem; color: var(--cyan); margin-left: 10px; padding: 1px 7px; border: 1px solid var(--cyan-dim); border-radius: 5px; }
+details { margin-top: 6px; }
+summary { cursor: pointer; color: var(--cyan); font-size: 0.85rem; list-style: none; display: inline-flex; gap: 4px; font-family: var(--mono); }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: '+'; width: 10px; }
+details[open] summary::before { content: '−'; }
+details ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); font-size: 0.9rem; }
+details li { margin-bottom: 4px; }
+
+/* Experience as three side-by-side panels */
+#exp-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
+#exp-list .row { display: block; padding: 18px 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; border-top: 2px solid var(--wire); }
+#exp-list .row:first-child { border-top-color: var(--cyan); }
+#exp-list .when { padding: 0 0 6px; }
+
+/* Publications */
+.year-group { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 16px; }
+.year-group + .year-group { border-top: 1px solid var(--line); margin-top: 4px; padding-top: 4px; }
+.year { font-family: var(--mono); font-size: 1.05rem; color: var(--violet); padding-top: 12px; }
+.pub { padding: 11px 0; }
+.pub + .pub { border-top: 1px dashed var(--line); }
+.pub h3 { font-size: 1rem; line-height: 1.4; }
+.pub .authors { font-size: 0.87rem; color: var(--muted); margin-top: 3px; }
+.pub .authors b { color: var(--ink); font-weight: 600; }
+.pub .meta { font-size: 0.84rem; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; }
+.tag { font-family: var(--mono); font-size: 0.72rem; padding: 1px 7px; border-radius: 5px; background: var(--cyan-dim); color: var(--cyan); }
+.figs { display: flex; gap: 6px; margin-top: 8px; overflow-x: auto; }
+.figs button { flex: 0 0 auto; width: 76px; height: 56px; padding: 0; border: 1px solid var(--line); border-radius: 6px; background: #fff; overflow: hidden; cursor: zoom-in; }
+.figs img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.figs button:hover { border-color: var(--cyan); }
+
+/* Treks */
+.trek-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.chip { border: 1px solid var(--line); background: var(--panel); border-radius: 6px; padding: 4px 11px; font-size: 0.84rem; cursor: pointer; color: var(--muted); }
+.chip[aria-pressed="true"] { border-color: var(--cyan); color: var(--cyan); background: var(--cyan-dim); }
+.chip span { opacity: .6; margin-left: 5px; font-family: var(--mono); font-size: .78rem; }
+.trek-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+.trek-grid button { aspect-ratio: 1; padding: 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--panel); cursor: zoom-in; }
+.trek-grid img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s ease, filter .5s ease; filter: saturate(.9); }
+.trek-grid button:hover img { transform: scale(1.05); filter: saturate(1.1); }
+.trek-grid button:first-child { grid-column: span 2; grid-row: span 2; }
+.btn-line { margin-top: 12px; border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 7px 14px; font-size: 0.86rem; cursor: pointer; color: var(--ink); }
+.btn-line:hover { border-color: var(--cyan); color: var(--cyan); }
+.empty { border: 1px dashed var(--line); border-radius: 10px; padding: 16px; color: var(--muted); font-size: 0.9rem; }
+
+/* Three panels: education, tools, talks */
+.grid-3 { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.grid-3 .row { grid-template-columns: 1fr; gap: 2px; }
+.panel h2.ket { margin-bottom: 8px; }
+.pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill { font-family: var(--mono); font-size: 0.78rem; padding: 3px 9px; border-radius: 5px; border: 1px solid var(--line); background: var(--panel-2); }
+.subhead { font-family: var(--head); font-size: 0.95rem; margin: 18px 0 6px; }
+
+/* Game */
+.game-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.game-wrap { margin-top: 14px; }
+.game-wrap canvas { width: 100%; height: auto; display: block; border-radius: 8px; border: 1px solid var(--line); image-rendering: pixelated; touch-action: none; cursor: pointer; }
+.game-bar { display: flex; justify-content: space-between; margin-bottom: 6px; font-family: var(--mono); font-size: 0.8rem; color: var(--muted); }
+#scoreDisplay { color: var(--cyan); }
+
+footer { border-top: 1px solid var(--line); margin-top: 34px; padding: 22px 0 calc(28px + env(safe-area-inset-bottom, 0px)); color: var(--muted); font-size: 0.88rem; }
+footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+footer .mono { font-family: var(--mono); font-size: 0.8rem; }
+
+/* Lightbox */
+#lightbox { position: fixed; inset: 0; z-index: 100; background: rgba(3, 6, 12, 0.95); display: none; align-items: center; justify-content: center; padding: 20px; padding-top: calc(20px + env(safe-area-inset-top, 0px)); }
+#lightbox.open { display: flex; }
+#lightbox figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; max-width: 1100px; width: 100%; }
+#lb-img { max-height: 80vh; max-width: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 0 40px rgba(62, 230, 240, .12); }
+#lightbox figcaption { text-align: center; }
+#lb-caption { font-family: var(--head); }
+#lb-count { font-family: var(--mono); font-size: 0.76rem; color: var(--muted); }
+.lb-btn { position: absolute; background: rgba(255,255,255,.07); border: 1px solid var(--line); color: #fff; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; }
+.lb-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.lb-btn svg { width: 22px; height: 22px; }
+#lb-close { top: calc(16px + env(safe-area-inset-top, 0px)); right: 16px; }
+#lb-prev { left: 12px; top: 50%; transform: translateY(-50%); }
+#lb-next { right: 12px; top: 50%; transform: translateY(-50%); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 960px) {
+  #exp-list { grid-template-columns: 1fr; gap: 10px; }
+  .grid-3 { grid-template-columns: 1fr 1fr; }
+  .grid-3 > :first-child { grid-column: 1 / -1; }
+  .trek-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 720px) {
+  .wrap { padding: 0 16px; }
+  .topbar .wrap { gap: 12px; }
+  .brand { display: none; }
+  .toc { margin-left: -6px; }
+  .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 14px; padding-top: 24px; padding-bottom: 24px; }
+  .portrait { width: 88px; height: 88px; box-shadow: 0 0 0 4px var(--cyan-dim), 0 0 22px rgba(62, 230, 240, .22); }
+  .hero .role { font-size: 0.92rem; }
+  .hero-actions { margin-top: 14px; }
+  .lede { font-size: 1.06rem; }
+  .facts { display: none; }
+  .grid-about { gap: 0; }
+  .fellow { margin: 4px 0 0; width: 100%; }
+  .hero-fade { background: linear-gradient(90deg, rgba(6,11,22,.95), rgba(6,11,22,.75)); }
+  .grid-about, .grid-3 { grid-template-columns: 1fr; }
+  .row, .year-group { grid-template-columns: 1fr; gap: 2px; }
+  .year { padding-top: 8px; }
+  .panel { padding: 16px; }
+  section { padding-top: 26px; }
+  .trek-grid { grid-template-columns: repeat(3, 1fr); }
+}
 </style>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        sepia: {
-                            dark: '#0a0908',
-                            light: '#fdfaf6',
-                            accent: '#d4a373',
-                            muted: '#8b5e3c'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+<script>
+  // Profile photo: tries common names before showing a placeholder.
+  const PROFILE_CANDIDATES = ['images/profile.jpg', 'images/profile.jpeg', 'images/profile.png', 'images/profile.JPG', 'images/profile.JPEG', 'images/profile.PNG', 'profile.jpg', 'profile.jpeg', 'profile.png', 'WhatsApp Image 2025-12-16 at 18.18.47.jpeg'];
+  function handleImageError(img) {
+    const tried = parseInt(img.dataset.tried || '0', 10) + 1;
+    img.dataset.tried = tried;
+    if (tried < PROFILE_CANDIDATES.length) { img.src = PROFILE_CANDIDATES[tried]; return; }
+    img.remove();
+    document.getElementById('portrait-fallback').hidden = false;
+  }
+</script>
 </head>
-<body class="bg-sepia-light dark:bg-sepia-dark text-sepia-dark dark:text-[#faedcd] selection:bg-sepia-accent/30 overflow-x-hidden">
+<body>
 
-    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-[0.12]">
-        <svg id="entanglement-svg" class="w-full h-full"></svg>
-    </div>
-
-    <div id="progress-bar" class="fixed top-0 left-0 h-[2px] bg-sepia-accent z-[100] transition-all duration-100" style="width: 0%"></div>
-
-    <nav class="fixed top-0 w-full z-[60] px-4 py-4 md:px-8 flex justify-between items-center backdrop-blur-md border-b border-sepia-muted/10">
-        <div class="text-xs sm:text-sm font-bold tracking-[0.2em] md:tracking-[0.4em] text-sepia-accent uppercase serif italic">
-            S. Paul
-        </div>
-        
-        <div class="hidden lg:flex gap-8 text-[9px] font-bold uppercase tracking-[0.3em] text-sepia-muted">
-            <a href="#about" class="hover:text-sepia-accent transition-colors">About</a>
-            <a href="#experience" class="hover:text-sepia-accent transition-colors">Research</a>
-            <a href="#publications" class="hover:text-sepia-accent transition-colors">Publications</a>
-            <a href="#research" class="hover:text-sepia-accent transition-colors">Interactive</a>
-            <a href="#education" class="hover:text-sepia-accent transition-colors">Education</a>
-        </div>
-
-        <div class="flex gap-2 md:gap-4 items-center">
-            <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-sepia-accent/10 transition-all text-sepia-accent">
-                <i data-lucide="sun" id="theme-icon-sun" class="w-4 h-4"></i>
-                <i data-lucide="moon" id="theme-icon-moon" class="hidden w-4 h-4"></i>
-            </button>
-            <a href="Soumyadip_Paul_CV.pdf" target="_blank" class="p-2 border border-sepia-muted/20 rounded-full hover:bg-sepia-accent/10 transition-all text-sepia-muted hover:text-sepia-accent" title="Download CV">
-                <i data-lucide="file-text" class="w-4 h-4"></i>
-            </a>
-            <a href="https://scholar.google.com/citations?user=XOewEWwAAAAJ&hl=en" target="_blank" class="p-2 border border-sepia-muted/20 rounded-full hover:bg-sepia-accent/10 transition-all text-sepia-muted hover:text-sepia-accent" title="Google Scholar">
-                <i data-lucide="graduation-cap" class="w-4 h-4"></i>
-            </a>
-        </div>
+<header class="topbar">
+  <div class="wrap">
+    <div class="brand"><span>|</span>S. Paul<span>⟩</span></div>
+    <nav class="toc" aria-label="Sections">
+      <a href="#about">About</a><a href="#research">Research</a><a href="#publications">Papers</a><a href="#treks">Treks</a><a href="#education">Education</a><a href="#break">Game</a>
     </nav>
+  </div>
+</header>
 
-    <section class="relative min-h-[90vh] sm:min-h-screen flex flex-col items-center justify-center px-6 py-20 md:py-32 sepia-overlay overflow-hidden">
-        <div class="max-w-7xl w-full">
-            <div class="text-center z-10 space-y-6 sm:space-y-10 max-w-4xl mx-auto">
-                <div class="text-sepia-muted font-mono text-[7px] sm:text-[9px] uppercase tracking-[0.4em] sm:tracking-[0.8em] flex items-center justify-center gap-2 sm:gap-3">
-                    <i data-lucide="scan" class="w-3 h-3 animate-pulse text-sepia-accent"></i> PhD Scholar · IndiaAI Fellow · Quantum & Wireless Systems
-                </div>
+<div class="hero">
+  <svg class="circuit" viewBox="0 0 1400 300" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+    <!-- qubit wires -->
+    <line class="w" x1="0" y1="50"  x2="1400" y2="50"/>
+    <line class="w" x1="0" y1="110" x2="1400" y2="110"/>
+    <line class="w" x1="0" y1="170" x2="1400" y2="170"/>
+    <line class="w" x1="0" y1="230" x2="1400" y2="230"/>
+    <!-- CNOTs -->
+    <line class="c" x1="820" y1="50" x2="820" y2="122"/><circle class="dot" cx="820" cy="50" r="5"/><circle class="c" cx="820" cy="110" r="12"/>
+    <line class="c" x1="1010" y1="110" x2="1010" y2="182"/><circle class="dot" cx="1010" cy="110" r="5"/><circle class="c" cx="1010" cy="170" r="12"/>
+    <line class="c" x1="1150" y1="170" x2="1150" y2="242"/><circle class="dot" cx="1150" cy="170" r="5"/><circle class="c" cx="1150" cy="230" r="12"/>
+    <!-- gates -->
+    <g class="g"><rect x="700" y="32" width="36" height="36" rx="4"/><text x="718" y="50">H</text></g>
+    <g class="g"><rect x="700" y="92" width="36" height="36" rx="4"/><text x="718" y="110">H</text></g>
+    <g class="g"><rect x="700" y="152" width="36" height="36" rx="4"/><text x="718" y="170">H</text></g>
+    <g class="g"><rect x="700" y="212" width="36" height="36" rx="4"/><text x="718" y="230">H</text></g>
+    <g class="g"><rect x="890" y="92" width="56" height="36" rx="4"/><text x="918" y="110">Rz(γ)</text></g>
+    <g class="g"><rect x="1070" y="212" width="56" height="36" rx="4"/><text x="1098" y="230">Rz(γ)</text></g>
+    <g class="g"><rect x="1225" y="32" width="56" height="36" rx="4"/><text x="1253" y="50">Rx(β)</text></g>
+    <g class="g"><rect x="1225" y="152" width="56" height="36" rx="4"/><text x="1253" y="170">Rx(β)</text></g>
+    <!-- measurements -->
+    <g class="g"><rect x="1330" y="32" width="40" height="36" rx="4"/><path class="c" d="M1338 58 a12 12 0 0 1 24 0 M1350 58 l8 -14"/></g>
+    <g class="g"><rect x="1330" y="92" width="40" height="36" rx="4"/><path class="c" d="M1338 118 a12 12 0 0 1 24 0 M1350 118 l8 -14"/></g>
+    <g class="g"><rect x="1330" y="152" width="40" height="36" rx="4"/><path class="c" d="M1338 178 a12 12 0 0 1 24 0 M1350 178 l8 -14"/></g>
+    <g class="g"><rect x="1330" y="212" width="40" height="36" rx="4"/><path class="c" d="M1338 238 a12 12 0 0 1 24 0 M1350 238 l8 -14"/></g>
+    <!-- one-time signal pulses -->
+    <line class="pulse" x1="0" y1="50" x2="1400" y2="50"/>
+    <line class="pulse" x1="0" y1="170" x2="1400" y2="170"/>
+    <line class="pulse" x1="0" y1="110" x2="1400" y2="110"/>
+  </svg>
+  <div class="hero-fade"></div>
+  <div class="wrap">
+    <div class="portrait">
+      <img src="images/profile.jpg" alt="Portrait of Soumyadip Paul" onerror="handleImageError(this)">
+      <svg id="portrait-fallback" hidden viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+    </div>
+    <div>
+      <h1>Soumyadip Paul</h1>
+      <p class="role"><b>PhD Research Scholar, CARE, IIT Delhi.</b> Quantum machine learning and quantum optimization for 6G and beyond wireless networks.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="mailto:soumyadipp235@gmail.com">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Email me</a>
+        <a class="btn" href="Soumyadip_Paul_CV_.pdf" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>CV</a>
+        <a class="btn round" href="https://scholar.google.com/citations?user=XOewEWwAAAAJ&hl=en" target="_blank" title="Google Scholar" aria-label="Google Scholar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></a>
+        <a class="btn round" href="https://www.linkedin.com/in/soumyadip-paul-743bb3185/" target="_blank" title="LinkedIn" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg></a>
+        <span class="fellow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M8.2 13.2 7 22l5-3 5 3-1.2-8.8"/></svg>IndiaAI Fellow, 2025</span>
+      </div>
+    </div>
+  </div>
+</div>
 
-                <h1 class="text-4xl sm:text-7xl md:text-8xl lg:text-[9.5rem] font-bold leading-[0.9] serif tracking-tighter transition-colors text-sepia-dark dark:text-[#faedcd]">
-                    Soumyadip <br /><span class="italic text-sepia-accent">Paul.</span>
-                </h1>
+<main class="wrap">
+  <section id="about">
+    <h2 class="ket">about</h2>
+    <div class="grid-about">
+      <div class="panel">
+        <p class="lede">I design quantum and hybrid quantum-classical algorithms for the hard optimization problems inside next-generation wireless networks.</p>
+        <p class="muted">I’m a doctoral researcher at the Centre for Applied Research in Electronics, IIT Delhi, advised by Prof. Neel Kanth Kundu. Recent work includes a warm-start QAOA for QAM MIMO detection, run on IBM quantum hardware, and a quantum algorithm for phase optimization in 1-bit RIS-assisted MIMO. Before that I worked on post-quantum cryptography and quantum-resistant blockchains.</p>
+      </div>
+      <div class="panel facts">
+        <div class="fact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M8.2 13.2 7 22l5-3 5 3-1.2-8.8"/></svg><div><b>IndiaAI Fellowship</b><span>Awarded 17 Dec 2025</span></div></div>
+        <div class="fact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/></svg><div><b>Run on IBM quantum hardware</b><span>WSLR-QAOA MIMO detection</span></div></div>
+        <div class="fact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg><div><b>7 papers</b><span>5 IEEE conference papers, 2 preprints</span></div></div>
+      </div>
+    </div>
+  </section>
 
-                <p class="max-w-3xl text-sepia-muted text-base sm:text-xl md:text-2xl font-light leading-relaxed mx-auto px-4">
-                    PhD Research Scholar at <span class="italic serif text-sepia-dark dark:text-[#faedcd] border-b border-sepia-accent/30">IIT Delhi (CARE) 🏛️</span>. Researching quantum algorithms, hybrid optimization, and next-generation wireless communications.
-                </p>
+  <section id="research">
+    <h2 class="ket">research</h2>
+    <div id="exp-list"></div>
+  </section>
 
-                <div class="flex flex-wrap gap-4 sm:gap-6 justify-center items-center pt-2 sm:pt-4">
-                    <a href="#contact-bottom" class="btn-primary group relative px-8 sm:px-10 py-3 font-bold uppercase tracking-[0.2em] text-[9px] sm:text-[10px] rounded-full overflow-hidden hover:pr-14">
-                        <span class="relative z-10">Contact Me</span>
-                        <i data-lucide="arrow-right" class="absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all"></i>
-                    </a>
-                </div>
+  <section id="publications">
+    <h2 class="ket">publications</h2>
+    <div class="panel" id="pub-list"></div>
+  </section>
 
-                <div class="relative group inline-block pt-8 sm:pt-12">
-                    <div class="absolute -inset-4 sm:-inset-6 bg-sepia-accent/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
-                    <div class="relative w-36 h-36 sm:w-60 sm:h-60 lg:w-80 lg:h-80 rounded-full overflow-hidden border-2 border-sepia-muted/20 shadow-2xl transition-all duration-700 bg-black flex items-center justify-center mx-auto">
-                        <img 
-                            id="profile-img"
-                            src="WhatsApp Image 2025-12-16 at 18.18.47.jpeg" 
-                            alt="Soumyadip Paul" 
-                            class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 opacity-0 scale-105 group-hover:scale-100"
-                            onload="this.classList.remove('opacity-0')"
-                            onerror="handleImageError(this)"
-                        >
-                        <div id="image-fallback" class="absolute inset-0 hidden items-center justify-center text-sepia-accent">
-                            <i data-lucide="user" class="w-12 h-12 sm:w-16 sm:h-16"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <section id="treks">
+    <div class="trek-head">
+      <h2 class="ket">treks</h2>
+      <p class="muted small" style="margin:0 0 14px">Off the grid, above the tree line.</p>
+    </div>
+    <div id="trek-filters" class="chips" role="group" aria-label="Filter by trek" hidden></div>
+    <div id="trek-loading" class="muted small">Loading photos…</div>
+    <div id="trek-grid" class="trek-grid"></div>
+    <button id="trek-more" class="btn-line" type="button" hidden>Show more photos</button>
+    <p id="trek-empty" class="empty" hidden>No trek photos yet. Add them to <code>images/treks/</code>.</p>
+  </section>
+
+  <section id="education">
+    <div class="grid-3">
+      <div class="panel">
+        <h2 class="ket">education</h2>
+        <div id="edu-list"></div>
+      </div>
+      <div class="panel">
+        <h2 class="ket">tools</h2>
+        <div id="skills-list" class="pills"></div>
+        <h3 class="subhead">Relevant courses</h3>
+        <p id="courses-list" class="muted small"></p>
+      </div>
+      <div class="panel" id="talks">
+        <h2 class="ket">talks</h2>
+        <div id="conf-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="break">
+    <div class="panel">
+      <div class="game-row">
+        <div>
+          <h2 class="ket" style="margin-bottom:4px">intermission</h2>
+          <p class="muted small" style="margin:0">A tiny runner game. Space, click or tap to jump. More in my <a href="https://soumyadip0110paul.github.io/Gamehub/" target="_blank">GameHub</a>.</p>
         </div>
-        
-        <div class="absolute bottom-4 sm:bottom-6 flex flex-col items-center gap-2 opacity-30">
-            <span class="text-[7px] sm:text-[8px] uppercase tracking-[0.5em] font-bold">Scroll</span>
-            <i data-lucide="mouse" class="w-4 h-4 animate-bounce"></i>
-        </div>
-    </section>
+        <button id="play-btn" class="btn primary" type="button" onclick="openGame()">Play the runner</button>
+      </div>
+      <div id="game-wrap" class="game-wrap" hidden>
+        <div class="game-bar"><span id="game-status">Running</span><span id="scoreDisplay">Score 000</span></div>
+        <canvas id="mainCanvas" aria-label="Runner game"></canvas>
+      </div>
+    </div>
+  </section>
+</main>
 
-    <section id="about" class="py-16 sm:py-24 md:py-40 px-6 max-w-6xl mx-auto border-t border-sepia-muted/10 text-center">
-        <div class="space-y-8 sm:space-y-12 max-w-4xl mx-auto">
-            <h2 class="text-3xl sm:text-5xl md:text-6xl font-bold serif italic text-sepia-accent">The Future of Connectivity.</h2>
-            <div class="space-y-6 sm:space-y-8 text-sepia-muted font-light leading-relaxed text-base sm:text-lg md:text-xl">
-                <p>
-                    I am a PhD Research Scholar at CARE, IIT Delhi, advised by Prof. Neel Kanth Kundu. My research explores quantum machine learning and quantum / hybrid quantum-classical optimization for 6G and beyond wireless networks.
-                </p>
-                <p>
-                    My current work includes warm-start linear-ramp QAOA for QAM MIMO detection and quantum algorithms for RIS-assisted MIMO phase optimization. Earlier, I worked on post-quantum cryptography, quantum-resistant blockchain, and combinatorial optimization.
-                </p>
-            </div>
-        </div>
-    </section>
+<footer>
+  <div class="wrap">
+    <span>Open to collaboration on quantum ML, quantum optimization and 6G. <a href="mailto:soumyadipp235@gmail.com">soumyadipp235@gmail.com</a></span>
+    <span class="mono">CARE · IIT Delhi</span>
+  </div>
+</footer>
 
-    <section id="research" class="relative py-16 sm:py-24 md:py-48 px-6 border-y border-sepia-muted/10 bg-sepia-muted/[0.02]">
-        <div class="max-w-7xl mx-auto flex flex-col items-center text-center">
-            <div class="inline-flex items-center gap-3 text-sepia-accent font-bold uppercase text-[8px] sm:text-[10px] tracking-[0.3em] sm:tracking-[0.5em] mb-6 sm:mb-8">
-                <i data-lucide="layout-grid" class="w-4 h-4"></i> Interactive Hub 🎮
-            </div>
-            <h2 class="text-3xl sm:text-5xl md:text-6xl font-bold serif italic leading-tight mb-8 sm:mb-12">Scientific Intermission.</h2>
-            
-            <div id="gameContainer" class="flex flex-col items-center w-full max-w-3xl">
-                <div class="w-full flex justify-between items-center mb-4 sm:mb-6 px-4">
-                    <div class="text-[8px] sm:text-[10px] font-bold uppercase tracking-widest text-sepia-accent flex items-center gap-2">
-                        <i data-lucide="zap" class="w-3 h-3"></i> Real-time Simulation
-                    </div>
-                    <div id="scoreDisplay" class="text-base sm:text-lg font-bold text-sepia-accent tracking-widest arcade-font">SCORE: 000</div>
-                </div>
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button class="lb-btn" id="lb-close" type="button" aria-label="Close" onclick="closeLightbox()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <button class="lb-btn" id="lb-prev" type="button" aria-label="Previous image" onclick="stepLightbox(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></button>
+  <button class="lb-btn" id="lb-next" type="button" aria-label="Next image" onclick="stepLightbox(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></button>
+  <figure>
+    <img id="lb-img" src="" alt="">
+    <figcaption><div id="lb-caption"></div><div id="lb-count"></div></figcaption>
+  </figure>
+</div>
 
-                <div id="gameInteractionLayer" class="relative w-full aspect-video flex items-center justify-center bg-[#050505] rounded-xl sm:rounded-2xl border border-sepia-muted/20 overflow-hidden shadow-[0_0_100px_rgba(212,163,115,0.05)] cursor-pointer">
-                    <canvas id="mainCanvas" class="game-canvas"></canvas>
-                    
-                    <div id="gameOverlay" class="absolute inset-0 bg-black/95 flex flex-col items-center justify-center hidden rounded-lg z-20 p-6 text-center">
-                        <h2 id="overlayTitle" class="text-2xl sm:text-3xl font-bold mb-4 serif text-sepia-accent uppercase">Simulation Loss</h2>
-                        <p id="overlayMessage" class="text-sepia-muted mb-6 sm:mb-8 tracking-widest uppercase text-[10px] sm:text-xs">Quantum Index: 0</p>
-                        <button onclick="restartGame()" class="bg-sepia-accent text-sepia-dark font-bold py-3 px-8 sm:px-10 rounded-full transition-all hover:scale-105 active:scale-95 text-[9px] sm:text-[10px] uppercase tracking-widest">
-                            Re-Sync State
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="mt-4 sm:mt-6 text-sepia-muted text-[8px] sm:text-[9px] uppercase tracking-[0.2em] sm:tracking-[0.3em] text-center px-4">
-                    Desktop: Space / Click. Mobile: Tap screen to Jump.
-                </div>
+<script src="images/photo-list.js" onerror="window.PHOTO_LIST = []"></script>
+<script>
+/* =====================================================================
+   SETTINGS
+   Photos are read from images/photo-list.js, which the GitHub workflow
+   rebuilds on every upload. Folders:
+     images/treks/<trek-name>/      one folder per trek
+     images/papers/<paper-id>/      figures for each paper (ids below)
+===================================================================== */
+const TREK_FOLDER = 'images/treks';
+const TREK_PAGE_SIZE = 9;   // photos shown before "Show more photos" (9 fills the grid neatly)
 
-                <div id="gamehubLink" class="mt-8 sm:mt-12 flex flex-col items-center gap-4">
-                    <p class="text-sepia-muted text-[9px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.4em] font-light px-4">Hungry for more simulations?</p>
-                    <a href="https://soumyadip0110paul.github.io/Gamehub/" target="_blank" class="group relative inline-flex items-center gap-3 sm:gap-4 px-8 sm:px-10 py-3 sm:py-4 bg-sepia-accent/5 border border-sepia-accent/30 rounded-full text-sepia-accent font-bold uppercase tracking-[0.2em] text-[8px] sm:text-[10px] hover:bg-sepia-accent hover:text-sepia-dark transition-all duration-500 shadow-lg shadow-sepia-accent/5">
-                        <span class="relative z-10">Enter GameHub Terminal</span>
-                        <i data-lucide="external-link" class="w-3 h-3 sm:w-4 sm:h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+// Only for a custom domain (not *.github.io); otherwise detected automatically.
+const GITHUB_OVERRIDE = { user: '', repo: '' };
+const GITHUB = (() => {
+  if (GITHUB_OVERRIDE.user && GITHUB_OVERRIDE.repo) return GITHUB_OVERRIDE;
+  if (!location.hostname.endsWith('.github.io')) return null;
+  const user = location.hostname.replace('.github.io', '');
+  const first = location.pathname.split('/').filter(Boolean)[0];
+  return { user, repo: first && !first.includes('.') ? first : `${user}.github.io` };
+})();
 
-    <section id="experience" class="py-16 sm:py-24 md:py-40 px-6 max-w-6xl mx-auto">
-        <h2 class="text-3xl sm:text-5xl md:text-6xl font-bold serif italic text-sepia-accent mb-12 sm:mb-20 text-center">Research Experience 🔬</h2>
-        <div id="exp-list" class="space-y-10 sm:space-y-16 max-w-4xl mx-auto"></div>
-    </section>
-
-    <section id="publications" class="py-16 sm:py-24 md:py-40 px-6 max-w-6xl mx-auto border-t border-sepia-muted/10">
-        <h2 class="text-3xl sm:text-5xl font-bold mb-12 sm:mb-20 serif italic text-center text-sepia-accent">Scientific Publications 📚</h2>
-        <div id="pub-list" class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-12"></div>
-    </section>
-
-    <section id="conferences" class="py-16 sm:py-24 md:py-40 px-6 max-w-6xl mx-auto bg-sepia-muted/[0.01] border-y border-sepia-muted/10">
-        <h2 class="text-3xl sm:text-5xl font-bold mb-12 sm:mb-20 serif italic text-center text-sepia-accent">Conference Presentations 🎤</h2>
-        <div id="conf-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"></div>
-    </section>
-
-    <section id="education" class="py-16 sm:py-24 md:py-40 px-6">
-        <div class="max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 sm:gap-20">
-            <div class="lg:w-2/3">
-                <h2 class="text-3xl sm:text-4xl font-bold mb-10 sm:mb-16 serif italic text-sepia-accent">Academic History 🎓</h2>
-                <div id="edu-list" class="space-y-12 sm:space-y-20 text-sm sm:text-base md:text-lg"></div>
-            </div>
-            <div class="lg:w-1/3">
-                <h2 class="text-3xl sm:text-4xl font-bold mb-10 sm:mb-16 serif italic text-sepia-accent text-center lg:text-left">Arsenal 🛠️</h2>
-                <div id="skills-list" class="flex flex-wrap gap-2 sm:gap-4 justify-center lg:justify-start"></div>
-            </div>
-        </div>
-    </section>
-
-    <footer id="contact-bottom" class="py-16 sm:py-24 md:py-40 bg-sepia-muted/[0.02] text-center px-6 border-t border-sepia-muted/10">
-        <div class="max-w-4xl mx-auto space-y-8 sm:space-y-12">
-            <h2 class="text-4xl sm:text-6xl md:text-8xl font-bold serif italic mb-4 sm:mb-6">Connect ✉️</h2>
-            <p class="text-sepia-muted text-lg sm:text-xl md:text-2xl italic font-light leading-relaxed px-4">Available for collaboration in Quantum Machine Learning & 6G Optimization. 🤝✨</p>
-            
-            <a href="mailto:soumyadipp235@gmail.com" class="inline-block text-lg sm:text-2xl md:text-4xl font-bold text-sepia-accent hover:tracking-widest transition-all duration-700 underline decoration-sepia-accent/20 underline-offset-[12px] break-words max-w-full">
-                soumyadipp235@gmail.com
-            </a>
-            
-            <div class="flex justify-center gap-8 sm:gap-12 text-[9px] sm:text-[11px] font-bold uppercase tracking-[0.2em] sm:tracking-[0.4em] text-sepia-muted pt-6 sm:pt-10">
-                <a href="https://www.linkedin.com/in/soumyadip-paul-743bb3185/" target="_blank" class="hover:text-sepia-accent transition-colors">LinkedIn</a>
-                <a href="https://scholar.google.com/citations?user=XOewEWwAAAAJ&hl=en" target="_blank" class="hover:text-sepia-accent transition-colors">Scholar</a>
-            </div>
-
-            <div class="mt-20 sm:mt-40 text-[7px] sm:text-[9px] font-mono opacity-20 uppercase tracking-[1em] sm:tracking-[2em]">
-                IIT DELHI • CARE • INDIAAI FELLOW
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        function toggleTheme() {
-            const html = document.documentElement;
-            html.classList.toggle('dark');
-            html.classList.toggle('light');
-            document.getElementById('theme-icon-sun').classList.toggle('hidden');
-            document.getElementById('theme-icon-moon').classList.toggle('hidden');
-        }
-
+/* ====================== CV DATA ====================== */
         const publications = [
-            { authors: "S. Paul and N. K. Kundu", title: "Efficient Quantum Algorithm for Phase Optimization of 1-Bit RIS-Assisted MIMO Communication System", venue: "arXiv preprint • 2026", doi: "10.48550/arXiv.2607.14700", type: "PREPRINT" },
-            { authors: "S. Paul, S. Banerjee, D. Bhowmik, and N. K. Kundu", title: "Warm-Start Quantum Approximate Optimization Algorithm for QAM MIMO Data Detection", venue: "arXiv preprint • 2026", doi: "10.48550/arXiv.2604.18479", type: "PREPRINT" },
-            { authors: "D. Das, A. K. Paul, R. S. Ray, S. Paul", title: "Automated Alignment of Course Outcomes with Program Outcomes and Program Educational Objectives Using NLP Techniques", venue: "IEEE CIACON 2025", doi: "10.1109/CIACON65473.2025.11189748", type: "CONFERENCE PAPER" },
-            { authors: "S. Paul and S. Chakraborty", title: "Hybrid Quantum Approximate Optimization Algorithm (HQAOA) for Efficient Blockchain Transaction Scheduling", venue: "IEEE ISACC 2025", doi: "10.1109/ISACC65211.2025.10969380", type: "CONFERENCE PAPER" },
-            { authors: "A. Sinharay, S. Paul, S. Chakraborty, and K. Chatterjee", title: "Partition Matching Maximum Zero-Sum Algorithm to Address VLSI Thermal Placement Issues", venue: "IEEE RAIT 2025", doi: "10.1109/RAIT65068.2025.11088908", type: "CONFERENCE PAPER" },
-            { authors: "S. Paul, M. M. Maitra, and S. Chakraborty", title: "Quantum Resistance Blockchain Algorithm using QHF and Novel Consensus Mechanism", venue: "IEEE SCEECS 2025", doi: "10.1109/SCEECS64059.2025.10940775", type: "CONFERENCE PAPER" },
-            { authors: "S. Paul, S. Chakraborty, and H. Rahaman", title: "A Novel Technique for Optimizing Supply Chain Operations in Railway Cargo System (RCS) using Blockchain Technology", venue: "AISC 2024 • ICT book series (in proceedings)", note: "Presented paper", type: "CONFERENCE PAPER" }
+            {
+                id: 'ris-phase-opt',
+                authors: 'S. Paul and N. K. Kundu',
+                title: 'Efficient Quantum Algorithm for Phase Optimization of 1-Bit RIS-Assisted MIMO Communication System',
+                venue: 'arXiv 2026 📡',
+                link: 'https://arxiv.org/abs/2607.14700', linkLabel: 'arXiv:2607.14700',
+                type: 'PREPRINT', figures: []
+            },
+            {
+                id: 'wslr-qaoa-mimo',
+                authors: 'S. Paul, S. Banerjee, D. Bhowmik, and N. K. Kundu',
+                title: 'Warm-Start Quantum Approximate Optimization Algorithm for QAM MIMO Data Detection',
+                venue: 'arXiv 2026 ⚛️',
+                link: 'https://arxiv.org/abs/2604.18479', linkLabel: 'arXiv:2604.18479',
+                type: 'PREPRINT', figures: []
+            },
+            {
+                id: 'ciacon-nlp',
+                authors: 'D. Das, A. K. Paul, R. S. Ray, S. Paul',
+                title: 'Automated Alignment of Course Outcomes with Program Outcomes and Program Educational Objectives Using NLP Techniques',
+                venue: 'IEEE CIACON 2025, Durgapur 📚',
+                doi: '10.1109/CIACON65473.2025.11189748',
+                type: 'CONFERENCE PAPER', figures: []
+            },
+            {
+                id: 'hqaoa-blockchain',
+                authors: 'S. Paul and S. Chakraborty',
+                title: 'Hybrid Quantum Approximate Optimization Algorithm (HQAOA) for Efficient Blockchain Transaction Scheduling',
+                venue: 'IEEE ISACC 2025, Silchar 🔗',
+                doi: '10.1109/ISACC65211.2025.10969380',
+                type: 'CONFERENCE PAPER', figures: []
+            },
+            {
+                id: 'vlsi-thermal',
+                authors: 'A. Sinharay, S. Paul, S. Chakraborty and K. Chatterjee',
+                title: 'Partition Matching Maximum Zero-Sum Algorithm to Address VLSI Thermal Placement Issues',
+                venue: 'IEEE RAIT 2025, Dhanbad 🔥',
+                doi: '10.1109/RAIT65068.2025.11088908',
+                type: 'CONFERENCE PAPER', figures: []
+            },
+            {
+                id: 'qhf-blockchain',
+                authors: 'S. Paul, M. M. Maitra, S. Chakraborty',
+                title: 'Quantum Resistance Blockchain Algorithm using QHF and Novel Consensus Mechanism',
+                venue: 'IEEE SCEECS 2025, Bhopal 🛡️',
+                doi: '10.1109/SCEECS64059.2025.10940775',
+                type: 'CONFERENCE PAPER', figures: []
+            },
+            {
+                id: 'rcs-blockchain',
+                authors: 'S. Paul, S. Chakraborty, H. Rahaman',
+                title: 'A Novel Technique for Optimizing Supply Chain Operations in Railway Cargo System (RCS) using Blockchain Technology',
+                venue: 'AISC 2024 🚉',
+                note: 'Presented • In proceedings (ICT book series)',
+                type: 'CONFERENCE PAPER', figures: []
+            }
         ];
 
         const conferences = [
-            { name: "IEEE ISACC 2025", location: "Silchar, India", type: "Oral Paper Presentation", details: "Hybrid QAOA for efficient blockchain transaction scheduling." },
-            { name: "IEEE SCEECS 2025", location: "Bhopal, India", type: "Oral Paper Presentation", details: "Quantum-resistant blockchain algorithm and consensus mechanism." },
-            { name: "AISC 2024", location: "India", type: "Research Presentation", details: "Blockchain-based optimization for Railway Cargo Systems." },
-            { name: "VLSID 2024", location: "Kolkata, India", type: "Conference Participation", details: "37th International Conference on VLSI Design." }
+            { name: 'IEEE ISACC 2025', location: 'Silchar', type: 'Oral Paper Presentation', details: '3rd International Conference on Intelligent Systems, Advanced Computing and Communication. Presented HQAOA for blockchain transaction scheduling.' },
+            { name: 'IEEE SCEECS 2025', location: 'Bhopal', type: 'Oral Paper Presentation', details: 'IEEE International Students’ Conference on Electrical, Electronics and Computer Science. Presented the quantum-resistant blockchain algorithm.' },
+            { name: 'AISC 2024', location: 'Kolkata', type: 'Paper Presentation', details: 'International Conference on Artificial Intelligence and Sustainable Computing. Presented blockchain-based supply chain optimization for railway cargo.' },
+            { name: 'IEEE India Council IAYPC', location: 'Aug — Dec 2024', type: 'Student Mentee', details: 'Industry Academia Young Professionals Committee mentorship programme (certification).' }
         ];
 
         const researchExperience = [
-            { title: "PhD Research — Quantum ML & 6G Optimization", period: "July 2025 — Present", location: "CARE, IIT Delhi • Advisor: Prof. Neel Kanth Kundu", details: "Researching quantum machine learning and quantum / hybrid quantum-classical optimization for 6G and beyond wireless networks. Developed WSLR-QAOA for QAM MIMO data detection, formulated as HUBO and validated on IBM quantum hardware (arXiv:2604.18479). IndiaAI Fellow (awarded 17 December 2025)." },
-            { title: "M.Tech Thesis — Quantum Cryptography & PQC", period: "July 2023 — May 2025", location: "GCECT, Kolkata • Advisor: Dr. Mausumi Maitra (Mazumdar)", details: "Investigated post-quantum cryptography; developed a quantum-resistant blockchain framework using quantum hash functions and Quantum Proof of Stake and Behavior (QPoSB). Designed HQAOA for blockchain transaction scheduling." },
-            { title: "Research Intern — SERB / DST Project", period: "January 2024 — July 2024", location: "GCELT, Kolkata • PI: Dr. Sarit Chakraborty", details: "Worked on design optimization of MEDA digital microfluidic biochips for cyber-physical systems. Optimized microfluidic routing to reduce self-contamination; also contributed to a blockchain-based Railway Cargo System."
+            {
+                title: 'PhD Research: QML & Optimization for 6G and Beyond',
+                period: 'July 2025 — Present',
+                location: 'CARE, IIT Delhi • Advisor: Prof. Neel Kanth Kundu',
+                details: [
+                    'Researching quantum machine learning and hybrid quantum-classical optimization algorithms for next-generation wireless networks.',
+                    'Developed a warm-start linear-ramp QAOA (WSLR-QAOA) framework for QAM MIMO data detection, formulated as a HUBO problem and validated on IBM quantum hardware (arXiv:2604.18479).',
+                    'Awarded the IndiaAI Fellowship (17 December 2025) in recognition of doctoral research contributions.'
+                ]
+            },
+            {
+                title: 'M.Tech Thesis: Quantum & Post-Quantum Cryptography',
+                period: 'July 2023 — May 2025',
+                location: 'GCECT, Kolkata • Advisor: Dr. Mausumi Maitra (Mazumdar)',
+                details: [
+                    'Investigated post-quantum cryptographic algorithms for enhanced data security.',
+                    'Built a quantum-resistant blockchain framework combining quantum hash functions with a novel consensus mechanism (Quantum Proof of Stake and Behavior, QPoSB) for malicious-behaviour detection.',
+                    'Designed HQAOA, integrating MA-QAOA and AL-QAOA, for blockchain transaction scheduling (with Prof. Dr. Sarit Chakraborty). Presented at IEEE ISACC 2025 and IEEE SCEECS 2025.'
+                ]
+            },
+            {
+                title: 'Research Intern: SERB-Sponsored Project',
+                period: 'Jan — July 2024',
+                location: 'GCELT, Kolkata • PI: Dr. Sarit Chakraborty',
+                details: [
+                    'Design optimization of Micro-Electrode-Dot-Array based Digital Microfluidic Biochips (MEDA DMFBs) for cyber-physical systems, sponsored by SERB, DST, Govt. of India.',
+                    'Optimized microfluidic routing in the biochips, reducing self-contamination.',
+                    'Contributed a blockchain supply-chain solution for Railway Cargo Systems using Solidity on Ethereum (presented at AISC 2024).'
+                ]
+            }
         ];
 
         const education = [
-            { degree: "PhD in Applied Research in Electronics", school: "Indian Institute of Technology Delhi (IIT Delhi)", period: "July 2025 — Present", grade: "8.00/10.0", details: "Research: Quantum Machine Learning and Optimization for 6G and beyond wireless networks • IndiaAI Fellowship" },
-            { degree: "M.Tech in Information Technology", school: "Government College of Engineering & Ceramic Technology, Kolkata", period: "July 2023 — May 2025", grade: "8.76/10.0", details: "Thesis: Quantum Cryptography and Post-Quantum Cryptographic Algorithms" },
-            { degree: "B.Tech in Computer Science and Engineering", school: "University of Engineering and Management, Kolkata", period: "June 2022", grade: "8.15/10.0", details: "First Class with Distinction" }
+            { degree: 'PhD (Applied Research in Electronics)', school: 'IIT Delhi • CARE', period: 'July 2025 — Present', grade: 'CGPA: 8.0/10.0', details: 'Research area: Quantum Machine Learning and optimization for 6G and beyond wireless networks. IndiaAI Fellow (Dec 2025).' },
+            { degree: 'M.Tech (Information Technology)', school: 'GCECT, Kolkata', period: 'July 2023 — May 2025', grade: 'CGPA: 8.76/10.0', details: 'Thesis: Quantum Cryptography and Post-Quantum Cryptographic Algorithms.' },
+            { degree: 'B.Tech (Computer Science & Engineering)', school: 'UEM, Kolkata', period: 'Graduated June 2022', grade: 'CGPA: 8.15/10.0', details: 'First Class with Distinction 💻.' }
         ];
 
-        const skills = [
-            "Quantum Computing", "QML & QAOA", "Quantum Optimization", "MIMO / 6G Networks", "Python", "NumPy & SciPy", "Qiskit", "PennyLane", "C++", "MATLAB", "LaTeX", "Technical Writing"
-        ];
+        const skills = ['Qiskit ⚛️', 'Python 🐍', 'NumPy / SciPy 🔢', 'Quantum ML 🤖', 'QAOA / Optimization 📊', '6G & MIMO 📶', 'Blockchain ⛓️', 'MATLAB 📈', 'C++ 💻', 'LaTeX ✍️'];
 
-        window.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-            initBackground();
-            injectContent();
-            initArcadeEngine();
-            startGame('runner');
-            window.addEventListener('scroll', () => {
-                const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-                const bar = document.getElementById('progress-bar');
-                if (bar) bar.style.width = scrolled + '%';
-            });
-        });
+        const courses = ['Quantum Computing and Quantum Information', 'Machine Learning', 'Pattern Recognition', 'Advanced Algorithms', 'Advanced Engineering Mathematics', 'Advanced Software Engineering', 'Research Methodology and IPR'];
 
-        function injectContent() {
-            const pubList = document.getElementById('pub-list');
-            publications.forEach(pub => {
-                const div = document.createElement('div');
-                div.className = 'group p-6 sm:p-8 bg-white/[0.02] border border-sepia-muted/10 rounded-2xl hover:border-sepia-accent/30 transition-all relative overflow-hidden';
-                div.innerHTML = `<div class="flex justify-between items-start mb-4 sm:mb-6"><div class="text-sepia-muted font-mono text-[8px] sm:text-[9px] uppercase tracking-widest flex items-center gap-2"><span class="w-1.5 h-1.5 bg-sepia-accent rounded-full animate-pulse"></span> ${pub.venue}</div><span class="text-[7px] sm:text-[8px] font-bold uppercase tracking-widest px-2 py-1 bg-sepia-accent/10 text-sepia-accent border border-sepia-accent/20 rounded">${pub.type}</span></div><h4 class="text-lg sm:text-2xl font-bold mb-3 sm:mb-4 serif leading-tight italic group-hover:text-sepia-accent transition-colors">"${pub.title}"</h4><p class="text-sepia-muted text-xs sm:text-sm mb-4 sm:mb-6 font-light leading-relaxed">${pub.authors}</p><div class="pt-4 border-t border-sepia-muted/5">${pub.doi ? `<a href="https://doi.org/${pub.doi}" target="_blank" class="text-[9px] sm:text-[10px] font-bold text-sepia-accent hover:tracking-widest transition-all uppercase">DOI Record 🌐</a>` : `<span class="text-[8px] sm:text-[9px] text-sepia-muted uppercase font-bold">${pub.note}</span>`}</div>`;
-                pubList.appendChild(div);
-            });
+        // Icons are optional: if the icon library can't load, the page still works.
+        function renderIcons() { try { if (window.lucide) lucide.createIcons(); } catch (e) {} }
 
-            const confList = document.getElementById('conf-list');
-            conferences.forEach(conf => {
-                const div = document.createElement('div');
-                div.className = 'p-6 sm:p-8 border border-sepia-muted/10 rounded-xl hover:bg-sepia-accent/[0.03] transition-all hover:border-sepia-accent/20';
-                div.innerHTML = `<div class="text-sepia-accent text-[8px] sm:text-[9px] font-bold uppercase tracking-widest mb-2 sm:mb-3">${conf.name} • ${conf.location}</div><h4 class="text-base sm:text-lg font-bold mb-1 sm:mb-2 serif">${conf.type}</h4><p class="text-xs sm:text-sm text-sepia-muted leading-relaxed font-light italic">${conf.details}</p>`;
-                confList.appendChild(div);
-            });
 
-            const expList = document.getElementById('exp-list');
-            researchExperience.forEach(exp => {
-                const div = document.createElement('div');
-                div.className = 'group relative pl-8 sm:pl-12 pb-12 sm:pb-16 border-l border-sepia-muted/10 last:pb-0';
-                div.innerHTML = `<div class="absolute left-[-6px] sm:left-[-8px] top-0 w-3 h-3 sm:w-4 sm:h-4 bg-sepia-accent rounded-full group-hover:scale-125 transition-transform duration-500 shadow-lg"></div><div class="text-sepia-muted font-mono text-[8px] sm:text-[10px] uppercase tracking-widest mb-1 sm:mb-2">${exp.period}</div><h3 class="text-xl sm:text-3xl font-bold serif mb-1 group-hover:text-sepia-accent transition-colors">${exp.title}</h3><div class="text-sepia-accent text-[9px] sm:text-[11px] font-bold uppercase tracking-widest mb-4 sm:mb-6 italic">${exp.location}</div><p class="text-sepia-muted text-sm sm:text-lg font-light leading-relaxed">${exp.details}</p>`;
-                expList.appendChild(div);
-            });
+/* ====================== HELPERS ====================== */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const stripEmoji = s => s.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B50}\u{1F000}-\u{1F2FF}]\uFE0F?/gu, '').trim();
+const boldMe = a => esc(a).replace(/S\. Paul/g, '<b>S. Paul</b>');
 
-            const eduList = document.getElementById('edu-list');
-            education.forEach(edu => {
-                const div = document.createElement('div');
-                div.className = 'relative pl-8 sm:pl-10 border-l border-sepia-muted/10 group';
-                div.innerHTML = `<div class="absolute left-[-5px] sm:left-[-6px] top-0 w-[10px] h-[10px] sm:w-[12px] sm:h-[12px] bg-sepia-accent rounded-full group-hover:scale-150 transition-transform"></div><div class="text-sepia-muted font-mono text-[8px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] mb-3 sm:mb-4">${edu.period}</div><h3 class="text-xl sm:text-3xl font-bold serif leading-tight mb-1 sm:mb-2">${edu.degree}</h3><div class="text-[10px] sm:text-[12px] font-bold uppercase tracking-[0.1em] sm:tracking-[0.2em] text-sepia-accent mb-4 sm:mb-6">${edu.school}</div><p class="text-sepia-muted text-sm sm:text-lg font-light leading-relaxed max-w-2xl mb-6 sm:mb-8">${edu.details}</p><div class="inline-block px-4 sm:px-5 py-1.5 sm:py-2 border border-sepia-muted/20 text-[9px] sm:text-[11px] font-bold uppercase tracking-widest text-sepia-accent bg-sepia-accent/5">CGPA: ${edu.grade}</div>`;
-                eduList.appendChild(div);
-            });
+function toggleTheme() {
+  const root = document.documentElement;
+  const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  root.dataset.theme = dark ? 'light' : 'dark';
+  try { localStorage.setItem('theme', root.dataset.theme); } catch (e) {}
+}
 
-            const skillContainer = document.getElementById('skills-list');
-            skills.forEach(skill => {
-                const span = document.createElement('span');
-                span.className = 'px-3 sm:px-5 py-2 sm:py-3 bg-sepia-muted/[0.05] border border-sepia-muted/10 rounded-full text-[9px] sm:text-[11px] font-bold uppercase tracking-widest hover:border-sepia-accent/40 transition-all cursor-default';
-                span.innerText = skill;
-                skillContainer.appendChild(span);
-            });
-            lucide.createIcons();
-        }
+/* ====================== RENDER CV ====================== */
+function render() {
+  // Experience
+  document.getElementById('exp-list').innerHTML = researchExperience.map(e => {
+    const [place, ...rest] = e.location.split('•');
+    return `<div class="row">
+      <div class="when">${esc(e.period.replace(' — ', '–'))}</div>
+      <div>
+        <h3>${esc(stripEmoji(e.title.replace(/^[^:]+:\s*/, '')))}</h3>
+        <div class="where">${esc(place.trim())}${rest.length ? ' · ' + esc(rest.join('•').trim()) : ''}</div>
+        <details><summary>Details</summary><ul>${e.details.map(d => `<li>${esc(d)}</li>`).join('')}</ul></details>
+      </div></div>`;
+  }).join('');
 
-        function handleImageError(img) {
-            img.style.display = 'none';
-            const fallback = document.getElementById('image-fallback');
-            if (fallback) fallback.style.display = 'flex';
-        }
+  // Publications grouped by year
+  const yearOf = p => (p.venue.match(/20\d\d/) || [''])[0];
+  const years = [...new Set(publications.map(yearOf))];
+  document.getElementById('pub-list').innerHTML = years.map(y => `
+    <div class="year-group"><div class="year">${y}</div><div>
+      ${publications.filter(p => yearOf(p) === y).map(p => {
+        const venue = stripEmoji(p.venue).replace(/\s*20\d\d/, ' ' + y).replace(/^arXiv 20\d\d$/, 'arXiv');
+        const link = p.doi ? `<a href="https://doi.org/${p.doi}" target="_blank">DOI</a>`
+                   : p.link ? `<a href="${p.link}" target="_blank">${esc(p.linkLabel)}</a>`
+                   : `<span class="muted">${esc(p.note)}</span>`;
+        const tag = p.type === 'PREPRINT' ? '<span class="tag">Preprint</span>' : '';
+        return `<article class="pub">
+          <h3>${esc(p.title)}</h3>
+          <div class="authors">${boldMe(p.authors)}</div>
+          <div class="meta">${tag}${p.type === 'PREPRINT' ? '' : `<span class="muted">${esc(venue)}</span>`}${link}</div>
+          <div class="figs" id="figs-${p.id}" hidden></div>
+        </article>`;
+      }).join('')}
+    </div></div>`).join('');
 
-        function initBackground() {
-            const svg = document.getElementById('entanglement-svg');
-            if(!svg) return;
-            const count = 25;
-            for (let i = 0; i < count; i++) {
-                const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                c.setAttribute("r", Math.random() * 2.5 + 0.5);
-                c.setAttribute("fill", "#d4a373");
-                c.innerHTML = `<animate attributeName="cx" values="${Math.random()*100}%;${Math.random()*100}%" dur="${30+Math.random()*20}s" repeatCount="indefinite" /><animate attributeName="cy" values="${Math.random()*100}%;${Math.random()*100}%" dur="${30+Math.random()*20}s" repeatCount="indefinite" /><animate attributeName="opacity" values="0.05;0.2;0.05" dur="5s" repeatCount="indefinite" />`;
-                svg.appendChild(c);
-            }
-        }
+  // Education
+  document.getElementById('edu-list').innerHTML = education.map(e => `
+    <div class="row">
+      <div class="when">${esc(e.period.replace(' — ', '–').replace('Graduated ', ''))}</div>
+      <div>
+        <span class="grade">${esc(e.grade.replace('CGPA: ', ''))}</span>
+        <h3>${esc(e.degree)}</h3>
+        <div class="where">${esc(e.school.replace(' • ', ', '))}. ${esc(stripEmoji(e.details))}</div>
+      </div></div>`).join('');
 
-        let canvas, ctx, gameLoop, currentGame = null, score = 0, gameState = 'STOPPED';
-        const keys = {};
+  document.getElementById('skills-list').innerHTML = skills.map(s => `<span class="pill">${esc(stripEmoji(s))}</span>`).join('');
+  document.getElementById('courses-list').textContent = courses.join(', ') + '.';
 
-        function initArcadeEngine() {
-            canvas = document.getElementById('mainCanvas');
-            const interactionLayer = document.getElementById('gameInteractionLayer');
-            ctx = canvas.getContext('2d');
-            
-            window.addEventListener('keydown', e => {
-                if (['Space', 'ArrowUp', 'KeyW'].includes(e.code) && gameState === 'RUNNING') {
-                    e.preventDefault(); // Stop scrolling
-                }
-                keys[e.code] = true;
-            });
-            window.addEventListener('keyup', e => keys[e.code] = false);
+  // Talks
+  document.getElementById('conf-list').innerHTML = conferences.map(c => `
+    <div class="row">
+      <div class="when">${esc(c.location.replace(' — ', '–'))}</div>
+      <div><h3>${esc(c.name)} <span class="muted" style="font-family:var(--sans);font-size:.85rem;font-weight:400">${esc(c.type)}</span></h3>
+      <div class="where">${esc(c.details)}</div></div></div>`).join('');
+}
 
-            const triggerJump = (e) => {
-                if(gameState === 'RUNNING') {
-                    if (e.cancelable) e.preventDefault();
-                    currentGame.jump();
-                } else if (gameState === 'GAMEOVER') {
-                    restartGame();
-                }
-            };
+/* ====================== IMAGES ====================== */
+const IMG_EXT = /\.(jpe?g|png|webp|gif|avif|svg)$/i;
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function captionFromFile(name) {
+  let base = decodeURIComponent(name).replace(IMG_EXT, '');
+  const d = base.match(/(?:^|[^0-9])(20\d{2})(\d{2})(\d{2})[_-]?\d{0,9}/);
+  if (d && /^(IMG|PXL|VID|DSC)?[_-]?\d{8}[_-]?\d*([_-].*)?$/i.test(base)) return `${+d[3]} ${MONTHS[+d[2] - 1] || ''} ${d[1]}`.trim();
+  base = base.replace(/^\d+[-_ ]+/, '').replace(/[-_]+/g, ' ').trim();
+  if (base === base.toUpperCase()) base = base.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+  return base.replace(/^\w/, c => c.toUpperCase());
+}
+const encPath = p => p.split('/').map(encodeURIComponent).join('/');
+const folderErrors = {};
 
-            interactionLayer.addEventListener('mousedown', triggerJump);
-            interactionLayer.addEventListener('touchstart', triggerJump, {passive: false});
+function listFromPhotoList(folder) {
+  const prefix = folder.replace(/\/+$/, '') + '/';
+  const images = [], dirs = new Set();
+  (window.PHOTO_LIST || []).forEach(path => {
+    if (!path.startsWith(prefix)) return;
+    const rest = path.slice(prefix.length).split('/');
+    if (rest.length === 1) images.push({ src: encPath(path), caption: captionFromFile(rest[0]) });
+    else dirs.add(rest[0]);
+  });
+  return { images, dirs: [...dirs].sort((a, b) => a.localeCompare(b, undefined, { numeric: true })) };
+}
 
-            window.addEventListener('resize', () => { if (gameState === 'RUNNING') resizeCanvas(); });
-        }
+async function listFolder(folder) {
+  if (Array.isArray(window.PHOTO_LIST) && window.PHOTO_LIST.length) return listFromPhotoList(folder);
+  if (!GITHUB) return { images: [], dirs: [] };
+  const key = 'dir3:' + folder;
+  try { const c = sessionStorage.getItem(key); if (c) return JSON.parse(c); } catch (e) {}
+  try {
+    const res = await fetch(`https://api.github.com/repos/${GITHUB.user}/${GITHUB.repo}/contents/${encPath(folder)}`);
+    if (!res.ok) {
+      folderErrors[folder] = res.status === 404 ? `The folder “${folder}” wasn’t found in ${GITHUB.user}/${GITHUB.repo}.`
+        : res.status === 403 ? 'GitHub’s hourly request limit was reached. Make sure the deploy workflow builds images/photo-list.js.'
+        : `GitHub returned error ${res.status}.`;
+      return { images: [], dirs: [] };
+    }
+    const items = await res.json();
+    const byName = (a, b) => a.name.localeCompare(b.name, undefined, { numeric: true });
+    const out = {
+      images: items.filter(f => f.type === 'file' && IMG_EXT.test(f.name)).sort(byName).map(f => ({ src: encPath(f.path), caption: captionFromFile(f.name) })),
+      dirs: items.filter(f => f.type === 'dir').sort(byName).map(f => f.name)
+    };
+    if (out.images.length || out.dirs.length) try { sessionStorage.setItem(key, JSON.stringify(out)); } catch (e) {}
+    return out;
+  } catch (e) { folderErrors[folder] = 'Couldn’t reach GitHub.'; return { images: [], dirs: [] }; }
+}
 
-        function resizeCanvas() {
-            const container = document.getElementById('gameContainer');
-            const w = Math.min(container.offsetWidth - 32, 600);
-            canvas.width = w;
-            canvas.height = w * 0.6;
-        }
+/* Treks */
+let trekAll = [], trekShown = [], trekVisible = 0;
+async function loadTreks() {
+  const root = await listFolder(TREK_FOLDER);
+  const albums = await Promise.all(root.dirs.map(async d => {
+    const album = captionFromFile(d);
+    return (await listFolder(`${TREK_FOLDER}/${d}`)).images.map(p => ({ ...p, album, caption: `${album}, ${p.caption}` }));
+  }));
+  trekAll = albums.flat().concat(root.images.map(p => ({ ...p, album: 'More trails' })));
+  document.getElementById('trek-loading').remove();
+  if (!trekAll.length) {
+    const msg = document.getElementById('trek-empty');
+    if (folderErrors[TREK_FOLDER]) msg.textContent = 'Trek photos couldn’t be loaded. ' + folderErrors[TREK_FOLDER];
+    msg.hidden = false; return;
+  }
+  const names = [...new Set(trekAll.map(p => p.album))];
+  if (names.length > 1) {
+    const bar = document.getElementById('trek-filters');
+    bar.innerHTML = [['all', 'All', trekAll.length], ...names.map(n => [n, n, trekAll.filter(p => p.album === n).length])]
+      .map(([k, l, c]) => `<button type="button" class="chip" data-key="${esc(k)}" aria-pressed="false">${esc(l)}<span>${c}</span></button>`).join('');
+    bar.addEventListener('click', e => { const b = e.target.closest('.chip'); if (b) setTrekFilter(b.dataset.key); });
+    bar.hidden = false;
+  }
+  document.getElementById('trek-more').addEventListener('click', showMoreTreks);
+  setTrekFilter('all');
+}
+function setTrekFilter(key) {
+  document.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.key === key));
+  trekShown = key === 'all' ? trekAll : trekAll.filter(p => p.album === key);
+  trekVisible = 0;
+  document.getElementById('trek-grid').innerHTML = '';
+  showMoreTreks();
+}
+function showMoreTreks() {
+  const grid = document.getElementById('trek-grid');
+  trekShown.slice(trekVisible, trekVisible + TREK_PAGE_SIZE).forEach((p, k) => {
+    const i = trekVisible + k;
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Open photo: ' + p.caption);
+    b.innerHTML = `<img src="${p.src}" alt="${esc(p.caption)}" loading="lazy" decoding="async">`;
+    b.querySelector('img').onerror = () => b.remove();
+    b.onclick = () => openLightbox(trekShown, i);
+    grid.appendChild(b);
+  });
+  trekVisible = Math.min(trekVisible + TREK_PAGE_SIZE, trekShown.length);
+  const more = document.getElementById('trek-more');
+  const left = trekShown.length - trekVisible;
+  more.hidden = left <= 0;
+  more.textContent = `Show more photos (${left})`;
+}
 
+/* Paper figures */
+async function loadFigures() {
+  await Promise.all(publications.map(async p => {
+    const figs = p.figures && p.figures.length
+      ? p.figures.map(f => typeof f === 'string' ? { src: f, caption: captionFromFile(f.split('/').pop()) } : f)
+      : (await listFolder(`images/papers/${p.id}`)).images;
+    if (!figs.length) return;
+    const strip = document.getElementById('figs-' + p.id);
+    figs.forEach((f, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('aria-label', 'Open figure: ' + f.caption);
+      b.innerHTML = `<img src="${f.src}" alt="${esc(f.caption)}" loading="lazy">`;
+      b.querySelector('img').onerror = () => b.remove();
+      b.onclick = () => openLightbox(figs.map(x => ({ ...x, caption: `${x.caption} (${p.title.split(' ').slice(0, 6).join(' ')}…)` })), i);
+      strip.appendChild(b);
+    });
+    strip.hidden = false;
+  }));
+}
+
+/* Lightbox */
+let lbItems = [], lbIndex = 0, lbReturn = null;
+function openLightbox(items, i) {
+  lbItems = items; lbIndex = i; lbReturn = document.activeElement;
+  drawLightbox();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('lb-close').focus();
+}
+function drawLightbox() {
+  const it = lbItems[lbIndex], img = document.getElementById('lb-img');
+  img.src = it.src; img.alt = it.caption || '';
+  document.getElementById('lb-caption').textContent = it.caption || '';
+  document.getElementById('lb-count').textContent = lbItems.length > 1 ? `${lbIndex + 1} of ${lbItems.length}` : '';
+  document.getElementById('lb-prev').hidden = document.getElementById('lb-next').hidden = lbItems.length < 2;
+}
+function stepLightbox(d) { lbIndex = (lbIndex + d + lbItems.length) % lbItems.length; drawLightbox(); }
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+  if (lbReturn) lbReturn.focus();
+}
+const lbOpen = () => document.getElementById('lightbox').classList.contains('open');
+document.addEventListener('keydown', e => {
+  if (!lbOpen()) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowRight') stepLightbox(1);
+  if (e.key === 'ArrowLeft') stepLightbox(-1);
+});
+document.getElementById('lightbox').addEventListener('click', e => { if (e.target.id === 'lightbox') closeLightbox(); });
+let touchX = null;
+document.getElementById('lightbox').addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+document.getElementById('lightbox').addEventListener('touchend', e => {
+  if (touchX === null) return;
+  const dx = e.changedTouches[0].clientX - touchX; touchX = null;
+  if (Math.abs(dx) > 50 && lbItems.length > 1) stepLightbox(dx < 0 ? 1 : -1);
+});
+
+/* Highlight the current section in the menus */
+function trackSections() {
+  const links = [...document.querySelectorAll('.toc a, .mbar a')];
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + en.target.id));
+      const m = document.querySelector(`.mbar a[href="#${en.target.id}"]`);
+      if (m) m.parentElement.scrollTo({ left: m.offsetLeft - 18, behavior: 'smooth' });
+    });
+  }, { rootMargin: '-30% 0px -65% 0px' });
+  document.querySelectorAll('main section').forEach(s => obs.observe(s));
+}
+
+/* ====================== GAME (starts only when opened) ====================== */
+let canvas, ctx, gameLoop, currentGame = null, score = 0, gameState = 'STOPPED';
+const keys = {};
+function isGameVisible() {
+  if (!canvas || document.getElementById('game-wrap').hidden) return false;
+  const r = canvas.getBoundingClientRect();
+  return r.top < innerHeight && r.bottom > 0;
+}
+function openGame() {
+  document.getElementById('game-wrap').hidden = false;
+  document.getElementById('play-btn').hidden = true;
+  canvas = document.getElementById('mainCanvas');
+  ctx = canvas.getContext('2d');
+  addEventListener('keydown', e => {
+    if (lbOpen()) return;
+    if (['Space', 'ArrowUp', 'KeyW'].includes(e.code) && isGameVisible()) {
+      e.preventDefault();
+      if (gameState === 'GAMEOVER') { startGame(); return; }
+    }
+    keys[e.code] = true;
+  });
+  addEventListener('keyup', e => keys[e.code] = false);
+  const tap = e => {
+    if (e.cancelable) e.preventDefault();
+    if (gameState === 'RUNNING') currentGame.jump(); else startGame();
+  };
+  canvas.addEventListener('mousedown', tap);
+  canvas.addEventListener('touchstart', tap, { passive: false });
+  addEventListener('resize', () => { if (gameState === 'RUNNING') resizeCanvas(); });
+  startGame();
+}
+function resizeCanvas() {
+  const w = Math.min(canvas.parentElement.clientWidth, 760);
+  canvas.width = w; canvas.height = Math.round(w * 0.42);
+}
         const Games = {
             runner: {
-                init() { 
-                    this.p = { x: 50, y: 150, w: 24, h: 24, dy: 0, j: -9, g: 0.5 }; 
-                    this.obs = []; 
-                    this.timer = 0; 
-                    this.animFrame = 0;
-                    this.cycleSpeed = 0.0005; // Much slower cycle
-                    
-                    // Generate mountains/forest
+                init() {
+                    this.p = { x: 50, y: 150, w: 24, h: 24, dy: 0, j: -9, g: 0.5 };
+                    this.obs = []; this.timer = 0; this.animFrame = 7854; // start at night this.cycleSpeed = 0.0005;
                     this.mountains = [];
-                    for(let i=0; i<5; i++) this.mountains.push({x: i * 200, w: 150 + Math.random() * 100, h: 80 + Math.random() * 60});
+                    for (let i = 0; i < 5; i++) this.mountains.push({ x: i * 200, w: 150 + Math.random() * 100, h: 80 + Math.random() * 60 });
                     this.forest = [];
-                    for(let i=0; i<15; i++) this.forest.push({x: i * 60, h: 30 + Math.random() * 40});
+                    for (let i = 0; i < 15; i++) this.forest.push({ x: i * 60, h: 30 + Math.random() * 40 });
                 },
                 update() {
-                    if (keys['Space'] || keys['ArrowUp'] || keys['KeyW']) this.jump();
-                    this.p.dy += this.p.g; 
-                    this.p.y += this.p.dy;
+                    if (isGameVisible() && (keys['Space'] || keys['ArrowUp'] || keys['KeyW'])) this.jump();
+                    this.p.dy += this.p.g; this.p.y += this.p.dy;
                     if (this.p.y > canvas.height - 34) { this.p.y = canvas.height - 34; this.p.dy = 0; }
-                    
-                    if (this.timer <= 0) { 
-                        this.obs.push({ x: canvas.width, w: 18, h: 20 + Math.random() * 25, type: Math.random() > 0.5 ? 'tall' : 'wide' }); 
-                        this.timer = 80 + Math.random() * 60; 
+                    if (this.timer <= 0) {
+                        this.obs.push({ x: canvas.width, w: 18, h: 20 + Math.random() * 25 });
+                        this.timer = 80 + Math.random() * 60;
                     }
                     this.timer--;
-                    
-                    this.obs.forEach((o, i) => {
+                    for (let i = this.obs.length - 1; i >= 0; i--) {
+                        const o = this.obs[i];
                         o.x -= 5 + (score / 500);
-                        if (this.p.x < o.x + o.w && this.p.x + this.p.w > o.x && this.p.y + this.p.h > canvas.height - o.h - 10) return endGame();
-                        if (o.x + o.w < 0) { 
-                            this.obs.splice(i, 1); 
-                            score += 10; 
-                            updateScore(); 
-                        }
-                    });
+                        if (this.p.x < o.x + o.w && this.p.x + this.p.w > o.x && this.p.y + this.p.h > canvas.height - o.h - 10) { endGame(); return; }
+                        if (o.x + o.w < 0) { this.obs.splice(i, 1); score += 10; updateScore(); }
+                    }
                     this.animFrame++;
                 },
                 jump() { if (this.p.y >= canvas.height - 35) this.p.dy = this.p.j; },
                 draw() {
                     const time = this.animFrame * this.cycleSpeed;
                     const sinTime = Math.sin(time);
-                    
-                    // Sky Color
                     let r, g, b;
-                    if (sinTime > 0) { // Day
-                        r = 135 + (20 * (1 - sinTime));
-                        g = 206 + (20 * (1 - sinTime));
-                        b = 235 + (20 * (1 - sinTime));
-                    } else { // Night
-                        r = 10 + (30 * (1 + sinTime));
-                        g = 15 + (40 * (1 + sinTime));
-                        b = 40 + (60 * (1 + sinTime));
-                    }
+                    if (sinTime > 0) { r = 135 + 20 * (1 - sinTime); g = 206 + 20 * (1 - sinTime); b = 235 + 20 * (1 - sinTime); }
+                    else { r = 10 + 30 * (1 + sinTime); g = 15 + 40 * (1 + sinTime); b = 40 + 60 * (1 + sinTime); }
                     ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                    // Sun/Moon
-                    const sunX = (canvas.width / 2) + Math.cos(time) * (canvas.width / 2);
-                    const sunY = (canvas.height / 1.1) + Math.sin(time) * (canvas.width / 2);
-                    const moonX = (canvas.width / 2) + Math.cos(time + Math.PI) * (canvas.width / 2);
-                    const moonY = (canvas.height / 1.1) + Math.sin(time + Math.PI) * (canvas.width / 2);
+                    const sunX = canvas.width / 2 + Math.cos(time) * (canvas.width / 2);
+                    const sunY = canvas.height / 1.1 + Math.sin(time) * (canvas.width / 2);
+                    const moonX = canvas.width / 2 + Math.cos(time + Math.PI) * (canvas.width / 2);
+                    const moonY = canvas.height / 1.1 + Math.sin(time + Math.PI) * (canvas.width / 2);
+                    ctx.fillStyle = '#FFD700'; ctx.beginPath(); ctx.arc(sunX, sunY, 22, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#EEE'; ctx.beginPath(); ctx.arc(moonX, moonY, 16, 0, Math.PI * 2); ctx.fill();
 
-                    ctx.fillStyle = '#FFD700';
-                    ctx.beginPath(); ctx.arc(sunX, sunY, 22, 0, Math.PI * 2); ctx.fill();
-                    ctx.fillStyle = '#EEE';
-                    ctx.beginPath(); ctx.arc(moonX, moonY, 16, 0, Math.PI * 2); ctx.fill();
-
-                    // Mountains (Parallax)
                     ctx.fillStyle = sinTime > 0 ? 'rgba(100, 100, 120, 0.4)' : 'rgba(30, 30, 50, 0.6)';
                     this.mountains.forEach(m => {
-                        let mx = (m.x - (this.animFrame * 0.5)) % (canvas.width + 200);
-                        if(mx < -200) mx += (canvas.width + 400);
-                        ctx.beginPath();
-                        ctx.moveTo(mx, canvas.height - 10);
-                        ctx.lineTo(mx + m.w / 2, canvas.height - 10 - m.h);
-                        ctx.lineTo(mx + m.w, canvas.height - 10);
-                        ctx.fill();
+                        let mx = (m.x - this.animFrame * 0.5) % (canvas.width + 200);
+                        if (mx < -200) mx += canvas.width + 400;
+                        ctx.beginPath(); ctx.moveTo(mx, canvas.height - 10); ctx.lineTo(mx + m.w / 2, canvas.height - 10 - m.h); ctx.lineTo(mx + m.w, canvas.height - 10); ctx.fill();
                     });
-
-                    // Forest (Parallax)
                     ctx.fillStyle = sinTime > 0 ? 'rgba(34, 139, 34, 0.3)' : 'rgba(0, 50, 0, 0.5)';
                     this.forest.forEach(t => {
-                        let tx = (t.x - (this.animFrame * 1.5)) % (canvas.width + 100);
-                        if(tx < -100) tx += (canvas.width + 200);
-                        ctx.beginPath();
-                        ctx.moveTo(tx, canvas.height - 10);
-                        ctx.lineTo(tx + 10, canvas.height - 10 - t.h);
-                        ctx.lineTo(tx + 20, canvas.height - 10);
-                        ctx.fill();
+                        let tx = (t.x - this.animFrame * 1.5) % (canvas.width + 100);
+                        if (tx < -100) tx += canvas.width + 200;
+                        ctx.beginPath(); ctx.moveTo(tx, canvas.height - 10); ctx.lineTo(tx + 10, canvas.height - 10 - t.h); ctx.lineTo(tx + 20, canvas.height - 10); ctx.fill();
                     });
 
-                    // Floor
-                    ctx.strokeStyle = sinTime > 0 ? '#3e342e' : '#faedcd'; 
+                    ctx.strokeStyle = sinTime > 0 ? '#3e342e' : '#faedcd';
                     ctx.lineWidth = 2;
                     ctx.beginPath(); ctx.moveTo(0, canvas.height - 10); ctx.lineTo(canvas.width, canvas.height - 10); ctx.stroke();
-                    
-                    // Obstacles (Plants/Cacti)
+
                     this.obs.forEach(o => {
-                        ctx.fillStyle = '#2d5a27'; // Dark green for plants
-                        ctx.fillRect(o.x + 6, canvas.height - o.h - 10, o.w - 12, o.h); // Main stem
-                        ctx.fillRect(o.x, canvas.height - o.h - 2, o.w, 4); // Base leaves
-                        // Branches
+                        ctx.fillStyle = '#2d5a27';
+                        ctx.fillRect(o.x + 6, canvas.height - o.h - 10, o.w - 12, o.h);
+                        ctx.fillRect(o.x, canvas.height - o.h - 2, o.w, 4);
                         ctx.fillRect(o.x, canvas.height - o.h - 8, 6, 3);
                         ctx.fillRect(o.x + o.w - 6, canvas.height - o.h - 4, 6, 3);
                     });
 
-                    // Pixel Bunny
                     const bx = this.p.x, by = this.p.y;
-                    ctx.fillStyle = '#faedcd'; 
+                    ctx.fillStyle = '#faedcd';
                     ctx.fillRect(bx, by + 8, 20, 12);
                     ctx.fillRect(bx + 4, by, 12, 10);
                     ctx.fillRect(bx + 4, by - 12 + (this.p.dy < 0 ? -4 : 0), 4, 14);
@@ -595,29 +894,28 @@
             }
         };
 
-        function startGame(key) {
-            document.getElementById('gameContainer').classList.remove('hidden');
-            document.getElementById('gameOverlay').classList.add('hidden');
-            resizeCanvas();
-            score = 0; updateScore();
-            currentGame = Games[key]; currentGame.init();
-            gameState = 'RUNNING';
-            if (gameLoop) cancelAnimationFrame(gameLoop);
-            function loop(time) { if (gameState === 'RUNNING') { currentGame.update(time); currentGame.draw(); gameLoop = requestAnimationFrame(loop); } }
-            gameLoop = requestAnimationFrame(loop);
-        }
 
-        function restartGame() { startGame('runner'); }
-        function endGame() { 
-            gameState = 'GAMEOVER'; 
-            document.getElementById('gameOverlay').classList.remove('hidden'); 
-            document.getElementById('overlayMessage').innerText = `Quantum Index: ${score}`; 
-        }
+function startGame() {
+  resizeCanvas();
+  score = 0; updateScore();
+  currentGame = Games.runner; currentGame.init();
+  gameState = 'RUNNING';
+  document.getElementById('game-status').textContent = 'Running';
+  cancelAnimationFrame(gameLoop);
+  const loop = () => { if (gameState === 'RUNNING') { currentGame.update(); currentGame.draw(); gameLoop = requestAnimationFrame(loop); } };
+  gameLoop = requestAnimationFrame(loop);
+}
+function endGame() {
+  gameState = 'GAMEOVER';
+  document.getElementById('game-status').textContent = `Out! Score ${score}. Tap or press Space to restart.`;
+}
+function updateScore() { document.getElementById('scoreDisplay').textContent = 'Score ' + String(score).padStart(3, '0'); }
 
-        function updateScore() { 
-            const scoreDisplay = document.getElementById('scoreDisplay');
-            if (scoreDisplay) scoreDisplay.innerText = `SCORE: ${score.toString().padStart(3, '0')}`; 
-        }
-    </script>
+/* ====================== START ====================== */
+render();
+trackSections();
+loadTreks();
+loadFigures();
+</script>
 </body>
 </html>
