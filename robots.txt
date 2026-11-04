@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://soumyadip0110paul.github.io/sitemap.xml
