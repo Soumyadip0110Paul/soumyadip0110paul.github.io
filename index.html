@@ -149,6 +149,9 @@ details li { margin-bottom: 3px; }
 /* ---------- Footer & game ---------- */
 footer { margin-top: 34px; border-top: 1px solid var(--line); padding: 20px 0 calc(30px + env(safe-area-inset-bottom, 0px)); font-family: var(--sans); font-size: 0.9rem; color: var(--muted); }
 footer .row { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; }
+.visitors { margin-top: 18px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.visitors span { font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
+.visitors img { display: block; max-width: 100%; height: auto; border: 0; border-radius: 3px; }
 .linkbtn { background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; font: inherit; }
 .linkbtn:hover { text-decoration: underline; }
 .game-wrap { margin-top: 14px; }
@@ -337,6 +340,10 @@ footer .row { display: flex; justify-content: space-between; gap: 12px; flex-wra
     <div class="row">
       <span>© Soumyadip Paul · CARE, IIT Delhi</span>
       <span>Need a break? <button class="linkbtn" id="play-btn" type="button" onclick="openGame()">Play the runner game</button> or visit my <a href="https://soumyadip0110paul.github.io/Gamehub/" target="_blank">GameHub</a>.</span>
+    </div>
+    <div class="visitors">
+      <span>Visitors from around the world</span>
+      <a href="https://info.flagcounter.com/qrEd" target="_blank" rel="noopener"><img src="https://s05.flagcounter.com/map/qrEd/size_m/txt_000000/border_CCCCCC/pageviews_0/viewers_0/flags_0/" alt="Flag Counter: map of visitor locations" loading="lazy"></a>
     </div>
     <div id="game-wrap" class="game-wrap" hidden>
       <div class="game-bar"><span id="game-status">Running</span><span id="scoreDisplay">Score 000</span></div>
