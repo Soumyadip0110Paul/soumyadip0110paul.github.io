@@ -6,6 +6,68 @@
 <meta name="theme-color" content="#FDFDFB">
 <title>Soumyadip Paul — PhD Scholar, CARE, IIT Delhi</title>
 <meta name="description" content="Soumyadip Paul, PhD Research Scholar and IndiaAI Fellow at CARE, IIT Delhi. Quantum machine learning and optimization for 6G and beyond wireless networks.">
+<link rel="canonical" href="https://soumyadip0110paul.github.io/">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Soumyadip Paul">
+<!-- Google Search Console: paste your verification tag on the next line (see instructions) -->
+
+<!-- How the page looks when shared on WhatsApp, LinkedIn, X etc. -->
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Soumyadip Paul — PhD Scholar, CARE, IIT Delhi">
+<meta property="og:description" content="Soumyadip Paul, PhD Research Scholar and IndiaAI Fellow at CARE, IIT Delhi. Quantum machine learning and optimization for 6G and beyond wireless networks.">
+<meta property="og:url" content="https://soumyadip0110paul.github.io/">
+<meta property="og:image" content="https://soumyadip0110paul.github.io/WhatsApp%20Image%202025-12-16%20at%2018.18.47.jpeg">
+<meta property="profile:first_name" content="Soumyadip">
+<meta property="profile:last_name" content="Paul">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Soumyadip Paul — PhD Scholar, CARE, IIT Delhi">
+<meta name="twitter:description" content="Soumyadip Paul, PhD Research Scholar and IndiaAI Fellow at CARE, IIT Delhi. Quantum machine learning and optimization for 6G and beyond wireless networks.">
+<meta name="twitter:image" content="https://soumyadip0110paul.github.io/WhatsApp%20Image%202025-12-16%20at%2018.18.47.jpeg">
+<!-- Tells Google who this page is about -->
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "Person",
+ "name": "Soumyadip Paul",
+ "url": "https://soumyadip0110paul.github.io/",
+ "image": "https://soumyadip0110paul.github.io/WhatsApp%20Image%202025-12-16%20at%2018.18.47.jpeg",
+ "email": "mailto:soumyadipp235@gmail.com",
+ "jobTitle": "PhD Research Scholar",
+ "description": "PhD Research Scholar and IndiaAI Fellow at the Centre for Applied Research in Electronics (CARE), IIT Delhi, working on quantum machine learning and quantum optimization for 6G and beyond wireless networks.",
+ "affiliation": {
+  "@type": "CollegeOrUniversity",
+  "name": "Indian Institute of Technology Delhi",
+  "department": {
+   "@type": "Organization",
+   "name": "Centre for Applied Research in Electronics (CARE)"
+  }
+ },
+ "alumniOf": [
+  {
+   "@type": "CollegeOrUniversity",
+   "name": "Government College of Engineering & Ceramic Technology, Kolkata"
+  },
+  {
+   "@type": "CollegeOrUniversity",
+   "name": "University of Engineering and Management, Kolkata"
+  }
+ ],
+ "award": "IndiaAI Fellowship (2025)",
+ "knowsAbout": [
+  "Quantum machine learning",
+  "Quantum Approximate Optimization Algorithm (QAOA)",
+  "6G wireless networks",
+  "MIMO detection",
+  "Reconfigurable intelligent surfaces",
+  "Post-quantum cryptography"
+ ],
+ "sameAs": [
+  "https://scholar.google.com/citations?user=XOewEWwAAAAJ&hl=en",
+  "https://www.linkedin.com/in/soumyadip-paul-743bb3185/",
+  "https://github.com/soumyadip0110paul"
+ ]
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏔️</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -65,9 +127,11 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 /* ---------- Trek triptych banner ---------- */
 .triptych { margin: 26px 0 0; }
 .triptych .strip { display: grid; grid-template-columns: 1.15fr 1.5fr 1fr; gap: 6px; height: 250px; }
-.triptych button { padding: 0; border: 0; overflow: hidden; border-radius: 3px; background: var(--accent-soft); cursor: zoom-in; }
-.triptych img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .7s ease; }
+.triptych button { position: relative; padding: 0; border: 0; overflow: hidden; border-radius: 3px; background: var(--accent-soft); cursor: zoom-in; }
+.triptych img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity 1.4s ease, transform .7s ease; }
+.triptych img.show { opacity: 1; }
 .triptych button:hover img { transform: scale(1.03); }
+@media (prefers-reduced-motion: reduce) { .triptych img { transition: none; } }
 .triptych figcaption { font-family: var(--sans); font-size: 0.86rem; color: var(--faint); margin-top: 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 
 /* ---------- Body layout ---------- */
@@ -393,6 +457,9 @@ const BANNER_PHOTOS = [
   'images/treks/HAMPTA_PASS-2025/20260727_090801.jpg'
 ];
 
+// The banner photos change one at a time, every this many seconds (0 = never change).
+const BANNER_SECONDS = 4;
+
 // News items (newest first). Add a line here whenever something happens.
 const news = [
   { date: 'Jul 2026', html: 'New preprint on quantum phase optimization for 1-bit RIS-assisted MIMO (<a href="https://arxiv.org/abs/2607.14700" target="_blank">arXiv:2607.14700</a>).' },
@@ -621,24 +688,70 @@ async function listFolder(folder) {
 
 /* Banner */
 function loadBanner(all) {
-  let picks = BANNER_PHOTOS.length
-    ? BANNER_PHOTOS.map(src => all.find(p => decodeURIComponent(p.src) === src) || { src: src.split('/').map(encodeURIComponent).join('/'), caption: '' })
-    : all.slice(0, 3);
-  if (picks.length < 3 && all.length >= 3) picks = all.slice(0, 3);
-  if (!picks.length) return;
+  const find = src => all.find(p => decodeURIComponent(p.src) === src);
+  let start = BANNER_PHOTOS.map(src => find(src)).filter(Boolean);
+  if (start.length < 3) start = start.concat(all.filter(p => !start.includes(p))).slice(0, 3);
+  if (!start.length) return;
+
   const strip = document.getElementById('triptych-strip');
-  picks.slice(0, 3).forEach((p, i) => {
+  const cap = document.getElementById('triptych-cap');
+  const updateCaption = () => {
+    const albums = [...new Set(slots.map(s => s.photo.album).filter(Boolean))];
+    cap.textContent = albums.length ? 'On the trail: ' + albums.join(', ') : 'On the trail';
+  };
+
+  // Each spot holds two stacked images so a new photo can fade in over the old one.
+  const slots = start.map((p, i) => {
     const b = document.createElement('button');
     b.type = 'button';
-    b.setAttribute('aria-label', 'Open trek photo' + (p.caption ? ': ' + p.caption : ''));
-    b.innerHTML = `<img src="${p.src}" alt="${esc(p.caption || 'Trek photo')}" ${i ? 'loading="lazy"' : 'fetchpriority="high"'}>`;
-    b.querySelector('img').onerror = () => b.remove();
-    b.onclick = () => openLightbox(picks, i);
+    b.innerHTML = `<img class="show" src="${p.src}" alt="${esc(p.caption || 'Trek photo')}" ${i ? '' : 'fetchpriority="high"'}><img alt="" aria-hidden="true">`;
+    const slot = { btn: b, imgs: [...b.querySelectorAll('img')], front: 0, photo: p };
+    b.setAttribute('aria-label', 'Open trek photo: ' + (p.caption || ''));
+    b.onclick = () => {
+      const k = all.indexOf(slot.photo);
+      k >= 0 ? openLightbox(all, k) : openLightbox([slot.photo], 0);
+    };
     strip.appendChild(b);
+    return slot;
   });
-  const albums = [...new Set(picks.map(p => p.album).filter(Boolean))];
-  document.getElementById('triptych-cap').textContent = albums.length ? 'On the trail: ' + albums.join(', ') : 'On the trail';
+  updateCaption();
   document.getElementById('triptych').hidden = false;
+
+  // Rotate through the other trek photos, one spot at a time.
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!BANNER_SECONDS || reduce || all.length <= slots.length) return;
+  const shuffle = arr => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
+  let queue = [], turn = 0, paused = false, busy = false;
+  const refill = () => { queue = shuffle(all.filter(p => !slots.some(s => s.photo === p))); };
+  strip.addEventListener('mouseenter', () => paused = true);
+  strip.addEventListener('mouseleave', () => paused = false);
+  strip.addEventListener('focusin', () => paused = true);
+  strip.addEventListener('focusout', () => paused = false);
+
+  setInterval(() => {
+    if (paused || busy || document.hidden || lbOpen()) return;
+    if (!queue.length) refill();
+    const next = queue.shift();
+    if (!next || slots.some(s => s.photo === next)) return;
+    const slot = slots[turn];
+    turn = (turn + 1) % slots.length;
+    busy = true;
+    const pre = new Image();
+    pre.onload = () => {
+      const back = slot.imgs[1 - slot.front], front = slot.imgs[slot.front];
+      back.src = next.src;
+      back.alt = next.caption || 'Trek photo'; back.removeAttribute('aria-hidden');
+      front.alt = ''; front.setAttribute('aria-hidden', 'true');
+      back.classList.add('show'); front.classList.remove('show');
+      slot.front = 1 - slot.front;
+      slot.photo = next;
+      slot.btn.setAttribute('aria-label', 'Open trek photo: ' + (next.caption || ''));
+      updateCaption();
+      busy = false;
+    };
+    pre.onerror = () => { busy = false; };
+    pre.src = next.src;
+  }, BANNER_SECONDS * 1000);
 }
 
 /* Trek gallery */
