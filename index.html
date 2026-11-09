@@ -369,6 +369,10 @@ footer .row { display: flex; justify-content: space-between; gap: 12px; flex-wra
         <h2 class="sec">Honours</h2>
         <div class="honour"><b>IndiaAI Fellowship</b>, awarded 17 December 2025 in recognition of doctoral research.</div>
       </section>
+      <section id="reviewing">
+        <h2 class="sec">Reviewer</h2>
+        <div id="review-list"></div>
+      </section>
       <section id="talks">
         <h2 class="sec">Talks &amp; service</h2>
         <div id="conf-list"></div>
@@ -529,6 +533,13 @@ const news = [
             }
         ];
 
+        // Peer review service. Add a line for each new conference or journal.
+        const reviewing = [
+            { venue: 'IEEE GLOBECOM', full: 'IEEE Global Communications Conference', kind: 'Conference' },
+            { venue: 'IEEE ICC', full: 'IEEE International Conference on Communications', kind: 'Conference' },
+            { venue: 'IEEE OJ-COMS', full: 'IEEE Open Journal of the Communications Society', kind: 'Journal' }
+        ];
+
         const conferences = [
             { name: 'IEEE ISACC 2025', location: 'Silchar', type: 'Oral Paper Presentation', details: '3rd International Conference on Intelligent Systems, Advanced Computing and Communication. Presented HQAOA for blockchain transaction scheduling.' },
             { name: 'IEEE SCEECS 2025', location: 'Bhopal', type: 'Oral Paper Presentation', details: 'IEEE International Students’ Conference on Electrical, Electronics and Computer Science. Presented the quantum-resistant blockchain algorithm.' },
@@ -627,6 +638,9 @@ function render() {
     <div class="item"><b>${esc(e.degree)}</b>
       <span class="m">${esc(e.school.replace(' • ', ', '))}</span><br>
       <span class="d">${esc(dash(e.period.replace('Graduated ', '')))} · ${esc(e.grade.replace('CGPA: ', 'CGPA '))}</span></div>`).join('');
+
+  document.getElementById('review-list').innerHTML = reviewing.map(r => `
+    <div class="item"><b>${esc(r.venue)} <span class="d" style="font-weight:400;margin-left:4px">${esc(r.kind)}</span></b><span class="m">${esc(r.full)}</span></div>`).join('');
 
   document.getElementById('conf-list').innerHTML = conferences.map(c => `
     <div class="item"><b>${esc(c.name)}</b><span class="m">${esc(c.type)}, ${esc(dash(c.location))}</span></div>`).join('');
