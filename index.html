@@ -461,6 +461,13 @@ const BANNER_PHOTOS = [
   'images/treks/HAMPTA_PASS-2025/20260727_090801.jpg'
 ];
 
+// Display names for trek folders. By default a folder name becomes the trek name
+// (e.g. "ROOPKUND-2027" shows as "Roopkund 2027"). Add a line here to show a different name.
+const TREK_NAMES = {
+  'HAMPTA_PASS-2025': 'Hampta Pass 2026',
+  'SAR_PASS-2025': 'Sar Pass 2026'
+};
+
 // The banner photos change one at a time, every this many seconds (0 = never change).
 const BANNER_SECONDS = 4;
 
@@ -773,7 +780,7 @@ let trekAll = [], trekShown = [], trekVisible = 0;
 async function loadTreks() {
   const root = await listFolder(TREK_FOLDER);
   const albums = await Promise.all(root.dirs.map(async d => {
-    const album = captionFromFile(d);
+    const album = TREK_NAMES[d] || captionFromFile(d);
     return (await listFolder(`${TREK_FOLDER}/${d}`)).images.map(p => ({ ...p, album, caption: `${album}, ${p.caption}` }));
   }));
   trekAll = albums.flat().concat(root.images.map(p => ({ ...p, album: 'More trails' })));
